@@ -18,6 +18,7 @@ export default function WorkspaceDetailPage() {
   const router = useRouter();
   const [workspace, setWorkspace] = useState<WorkspaceDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isIndexing, setIsIndexing] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,6 +48,23 @@ export default function WorkspaceDetailPage() {
     fetchWorkspace();
   }, [params.id, router]);
 
+  const handleRunIntelligence = async () => {
+    setIsIndexing(true);
+    toast('info', 'Indexing Started', 'Chunking files and generating vector embeddings...');
+    try {
+      const res = await fetch(`/api/workspaces/${params.id}/index`, { method: 'POST' });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error);
+      
+      toast('success', 'Intelligence Complete', data.message);
+    } catch (err: any) {
+      toast('error', 'Indexing Failed', err.message);
+    } finally {
+      setIsIndexing(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="nx-page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -74,7 +92,9 @@ export default function WorkspaceDetailPage() {
         </div>
         <div className="nx-page__actions">
           <Button variant="secondary" size="sm">Settings</Button>
-          <Button variant="primary" size="sm">Run Intelligence</Button>
+          <Button variant="primary" size="sm" onClick={handleRunIntelligence} isLoading={isIndexing}>
+            {isIndexing ? 'Indexing...' : 'Run Intelligence'}
+          </Button>
         </div>
       </div>
 

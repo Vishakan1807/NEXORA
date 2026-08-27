@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, uuid, jsonb, integer } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, boolean, uuid, jsonb, integer, vector, index } from 'drizzle-orm/pg-core';
 import type { UserRole, WorkspaceStatus, WorkspaceSourceType, ProviderStatus, NotificationSeverity, WorkflowStatus } from '@/types';
 
 // ============================================================
@@ -82,5 +82,18 @@ export const auditLogs = pgTable('audit_logs', {
   target: text('target').notNull(),
   result: text('result').notNull(), // 'success', 'failure', 'denied'
   context: jsonb('context'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// ============================================================
+// WORKSPACE DOCUMENTS (Vector Embeddings)
+// ============================================================
+export const workspaceDocuments = pgTable('workspace_documents', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  filePath: text('file_path').notNull(),
+  content: text('content').notNull(),
+  metadata: jsonb('metadata'), // e.g. { chunkIndex: 0, type: 'function', name: 'processData' }
+  embedding: vector('embedding', { dimensions: 1536 }), // OpenAI text-embedding-3-small dimensions
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

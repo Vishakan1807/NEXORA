@@ -9,12 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.50",
     "adm-zip": "^0.6.0",
+    "ai": "^7.0.83",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
     "jose": "^6.2.10",
     "jsonwebtoken": "^9.0.3",
     "next": "16.3.3",
+    "pgvector": "^0.3.0",
     "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8",
