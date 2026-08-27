@@ -1,0 +1,652 @@
+/* ============================================================
+   NEXORA — Design System
+   Next-Generation AI Engineering & Orchestration Platform
+   
+   Three-Theme Futuristic Design System
+   - Aurora: Light, intelligent, premium
+   - Eclipse: Dark, powerful, focused
+   - Signature: Distinctive, executive, emerald
+   ============================================================ */
+
+/* ============================================================
+   FONTS
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--nx-font-sans);
+  font-size: var(--nx-text-base);
+  line-height: 1.6;
+  color: var(--nx-text-primary);
+  background-color: var(--nx-bg-primary);
+  transition: background-color var(--nx-transition-slow), color var(--nx-transition-slow);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   TYPOGRAPHY TOKENS
+   ============================================================ */
+:root {
+  --nx-font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --nx-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+
+  /* Font sizes */
+  --nx-text-2xs: 0.625rem;
+  --nx-text-xs: 0.75rem;
+  --nx-text-sm: 0.875rem;
+  --nx-text-base: 1rem;
+  --nx-text-lg: 1.125rem;
+  --nx-text-xl: 1.25rem;
+  --nx-text-2xl: 1.5rem;
+  --nx-text-3xl: 1.875rem;
+  --nx-text-4xl: 2.25rem;
+  --nx-text-5xl: 3rem;
+
+  /* Font weights */
+  --nx-weight-light: 300;
+  --nx-weight-normal: 400;
+  --nx-weight-medium: 500;
+  --nx-weight-semibold: 600;
+  --nx-weight-bold: 700;
+  --nx-weight-extrabold: 800;
+
+  /* Line heights */
+  --nx-leading-tight: 1.25;
+  --nx-leading-snug: 1.375;
+  --nx-leading-normal: 1.5;
+  --nx-leading-relaxed: 1.625;
+
+  /* Letter spacing */
+  --nx-tracking-tight: -0.025em;
+  --nx-tracking-normal: 0;
+  --nx-tracking-wide: 0.025em;
+  --nx-tracking-wider: 0.05em;
+  --nx-tracking-widest: 0.1em;
+
+  /* ============================================================
+     SPACING TOKENS
+     ============================================================ */
+  --nx-space-0: 0;
+  --nx-space-1: 0.25rem;
+  --nx-space-2: 0.5rem;
+  --nx-space-3: 0.75rem;
+  --nx-space-4: 1rem;
+  --nx-space-5: 1.25rem;
+  --nx-space-6: 1.5rem;
+  --nx-space-8: 2rem;
+  --nx-space-10: 2.5rem;
+  --nx-space-12: 3rem;
+  --nx-space-16: 4rem;
+  --nx-space-20: 5rem;
+  --nx-space-24: 6rem;
+
+  /* ============================================================
+     RADIUS TOKENS
+     ============================================================ */
+  --nx-radius-xs: 4px;
+  --nx-radius-sm: 6px;
+  --nx-radius-md: 10px;
+  --nx-radius-lg: 14px;
+  --nx-radius-xl: 20px;
+  --nx-radius-2xl: 28px;
+  --nx-radius-full: 9999px;
+
+  /* ============================================================
+     MOTION TOKENS
+     ============================================================ */
+  --nx-transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  --nx-transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --nx-transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --nx-transition-spring: 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --nx-transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* ============================================================
+     Z-INDEX SCALE
+     ============================================================ */
+  --nx-z-base: 0;
+  --nx-z-dropdown: 100;
+  --nx-z-sticky: 200;
+  --nx-z-sidebar: 300;
+  --nx-z-overlay: 400;
+  --nx-z-modal: 500;
+  --nx-z-popover: 600;
+  --nx-z-toast: 700;
+  --nx-z-tooltip: 800;
+  --nx-z-command: 900;
+
+  /* ============================================================
+     LAYOUT TOKENS
+     ============================================================ */
+  --nx-sidebar-width: 260px;
+  --nx-sidebar-collapsed-width: 64px;
+  --nx-topbar-height: 56px;
+  --nx-statusbar-height: 32px;
+  --nx-chat-input-height: 56px;
+  --nx-content-max-width: 1400px;
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --nx-transition-fast: 0ms;
+    --nx-transition-base: 0ms;
+    --nx-transition-slow: 0ms;
+    --nx-transition-spring: 0ms;
+    --nx-transition-bounce: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================
+   THEME: AURORA (Light, Intelligent, Futuristic, Professional)
+   Pearl-like surfaces, refined blue-teal accents, high readability
+   ============================================================ */
+[data-theme="aurora"] {
+  /* Surfaces */
+  --nx-bg-primary: hsl(215, 30%, 97%);
+  --nx-bg-secondary: hsl(215, 25%, 94%);
+  --nx-bg-elevated: hsl(0, 0%, 100%);
+  --nx-bg-sunken: hsl(215, 20%, 91%);
+  --nx-bg-overlay: hsla(215, 35%, 18%, 0.45);
+  --nx-bg-highlight: hsla(195, 90%, 48%, 0.06);
+
+  /* Text */
+  --nx-text-primary: hsl(215, 45%, 10%);
+  --nx-text-secondary: hsl(215, 20%, 38%);
+  --nx-text-muted: hsl(215, 14%, 52%);
+  --nx-text-disabled: hsl(215, 10%, 70%);
+  --nx-text-inverse: hsl(0, 0%, 100%);
+  --nx-text-on-accent: hsl(0, 0%, 100%);
+
+  /* Accent — Refined teal-blue */
+  --nx-accent: hsl(195, 88%, 42%);
+  --nx-accent-hover: hsl(195, 88%, 35%);
+  --nx-accent-active: hsl(195, 88%, 30%);
+  --nx-accent-subtle: hsla(195, 88%, 42%, 0.08);
+  --nx-accent-muted: hsla(195, 88%, 42%, 0.15);
+
+  /* Semantic colors */
+  --nx-success: hsl(152, 62%, 38%);
+  --nx-success-subtle: hsla(152, 62%, 38%, 0.08);
+  --nx-success-text: hsl(152, 62%, 30%);
+  --nx-warning: hsl(38, 95%, 48%);
+  --nx-warning-subtle: hsla(38, 95%, 48%, 0.08);
+  --nx-warning-text: hsl(28, 80%, 32%);
+  --nx-error: hsl(0, 72%, 52%);
+  --nx-error-subtle: hsla(0, 72%, 52%, 0.06);
+  --nx-error-text: hsl(0, 72%, 42%);
+  --nx-critical: hsl(0, 82%, 40%);
+  --nx-critical-subtle: hsla(0, 82%, 40%, 0.06);
+  --nx-info: hsl(210, 80%, 52%);
+  --nx-info-subtle: hsla(210, 80%, 52%, 0.06);
+
+  /* Borders */
+  --nx-border: hsl(215, 18%, 87%);
+  --nx-border-hover: hsl(215, 18%, 78%);
+  --nx-border-focus: var(--nx-accent);
+  --nx-border-error: var(--nx-error);
+
+  /* Shadows */
+  --nx-shadow-xs: 0 1px 2px hsla(215, 30%, 18%, 0.04);
+  --nx-shadow-sm: 0 1px 4px hsla(215, 30%, 18%, 0.06), 0 1px 2px hsla(215, 30%, 18%, 0.04);
+  --nx-shadow-md: 0 4px 12px hsla(215, 30%, 18%, 0.08), 0 2px 4px hsla(215, 30%, 18%, 0.04);
+  --nx-shadow-lg: 0 8px 30px hsla(215, 30%, 18%, 0.10), 0 4px 8px hsla(215, 30%, 18%, 0.05);
+  --nx-shadow-xl: 0 16px 50px hsla(215, 30%, 18%, 0.14), 0 8px 16px hsla(215, 30%, 18%, 0.06);
+  --nx-shadow-glow: 0 0 20px hsla(195, 88%, 42%, 0.15);
+  --nx-shadow-accent: 0 4px 16px hsla(195, 88%, 42%, 0.20);
+
+  /* Glass / Frost */
+  --nx-glass-bg: hsla(0, 0%, 100%, 0.72);
+  --nx-glass-blur: blur(16px);
+  --nx-glass-border: hsla(215, 20%, 88%, 0.6);
+
+  /* Scrollbar */
+  --nx-scrollbar-track: hsl(215, 20%, 93%);
+  --nx-scrollbar-thumb: hsl(215, 15%, 78%);
+  --nx-scrollbar-thumb-hover: hsl(215, 15%, 65%);
+
+  /* Code */
+  --nx-code-bg: hsl(215, 20%, 95%);
+  --nx-code-text: hsl(250, 55%, 45%);
+
+  /* Interactive */
+  --nx-interactive-hover: hsla(215, 30%, 18%, 0.04);
+  --nx-interactive-active: hsla(215, 30%, 18%, 0.08);
+  --nx-interactive-selected: hsla(195, 88%, 42%, 0.10);
+
+  /* Focus ring */
+  --nx-focus-ring: 0 0 0 2px var(--nx-bg-elevated), 0 0 0 4px var(--nx-accent);
+
+  /* Chart colors */
+  --nx-chart-1: hsl(195, 88%, 42%);
+  --nx-chart-2: hsl(152, 62%, 38%);
+  --nx-chart-3: hsl(38, 95%, 48%);
+  --nx-chart-4: hsl(280, 60%, 50%);
+  --nx-chart-5: hsl(340, 65%, 50%);
+}
+
+/* ============================================================
+   THEME: ECLIPSE (Dark, Powerful, Advanced, Focused)
+   Deep navy/graphite, controlled cyan accents, minimal glow
+   ============================================================ */
+[data-theme="eclipse"] {
+  /* Surfaces */
+  --nx-bg-primary: hsl(222, 28%, 7%);
+  --nx-bg-secondary: hsl(222, 24%, 11%);
+  --nx-bg-elevated: hsl(222, 22%, 15%);
+  --nx-bg-sunken: hsl(222, 30%, 5%);
+  --nx-bg-overlay: hsla(222, 35%, 3%, 0.75);
+  --nx-bg-highlight: hsla(200, 95%, 55%, 0.06);
+
+  /* Text */
+  --nx-text-primary: hsl(220, 15%, 93%);
+  --nx-text-secondary: hsl(220, 12%, 62%);
+  --nx-text-muted: hsl(220, 10%, 42%);
+  --nx-text-disabled: hsl(220, 8%, 30%);
+  --nx-text-inverse: hsl(222, 28%, 7%);
+  --nx-text-on-accent: hsl(0, 0%, 100%);
+
+  /* Accent — Controlled cyan */
+  --nx-accent: hsl(200, 95%, 55%);
+  --nx-accent-hover: hsl(200, 95%, 62%);
+  --nx-accent-active: hsl(200, 95%, 48%);
+  --nx-accent-subtle: hsla(200, 95%, 55%, 0.10);
+  --nx-accent-muted: hsla(200, 95%, 55%, 0.18);
+
+  /* Semantic colors */
+  --nx-success: hsl(152, 58%, 48%);
+  --nx-success-subtle: hsla(152, 58%, 48%, 0.10);
+  --nx-success-text: hsl(152, 58%, 55%);
+  --nx-warning: hsl(38, 88%, 55%);
+  --nx-warning-subtle: hsla(38, 88%, 55%, 0.10);
+  --nx-warning-text: hsl(38, 88%, 60%);
+  --nx-error: hsl(0, 72%, 58%);
+  --nx-error-subtle: hsla(0, 72%, 58%, 0.10);
+  --nx-error-text: hsl(0, 72%, 62%);
+  --nx-critical: hsl(0, 78%, 48%);
+  --nx-critical-subtle: hsla(0, 78%, 48%, 0.10);
+  --nx-info: hsl(210, 82%, 58%);
+  --nx-info-subtle: hsla(210, 82%, 58%, 0.10);
+
+  /* Borders */
+  --nx-border: hsl(222, 18%, 20%);
+  --nx-border-hover: hsl(222, 18%, 28%);
+  --nx-border-focus: var(--nx-accent);
+  --nx-border-error: var(--nx-error);
+
+  /* Shadows */
+  --nx-shadow-xs: 0 1px 2px hsla(222, 40%, 2%, 0.25);
+  --nx-shadow-sm: 0 1px 4px hsla(222, 40%, 2%, 0.30), 0 1px 2px hsla(222, 40%, 2%, 0.20);
+  --nx-shadow-md: 0 4px 12px hsla(222, 40%, 2%, 0.35), 0 2px 4px hsla(222, 40%, 2%, 0.20);
+  --nx-shadow-lg: 0 8px 30px hsla(222, 40%, 2%, 0.40), 0 4px 8px hsla(222, 40%, 2%, 0.25);
+  --nx-shadow-xl: 0 16px 50px hsla(222, 40%, 2%, 0.50), 0 8px 16px hsla(222, 40%, 2%, 0.30);
+  --nx-shadow-glow: 0 0 24px hsla(200, 95%, 55%, 0.10);
+  --nx-shadow-accent: 0 4px 20px hsla(200, 95%, 55%, 0.18);
+
+  /* Glass / Frost */
+  --nx-glass-bg: hsla(222, 24%, 12%, 0.72);
+  --nx-glass-blur: blur(20px);
+  --nx-glass-border: hsla(222, 18%, 24%, 0.5);
+
+  /* Scrollbar */
+  --nx-scrollbar-track: hsl(222, 24%, 10%);
+  --nx-scrollbar-thumb: hsl(222, 18%, 25%);
+  --nx-scrollbar-thumb-hover: hsl(222, 18%, 35%);
+
+  /* Code */
+  --nx-code-bg: hsl(222, 26%, 10%);
+  --nx-code-text: hsl(200, 90%, 65%);
+
+  /* Interactive */
+  --nx-interactive-hover: hsla(220, 20%, 90%, 0.04);
+  --nx-interactive-active: hsla(220, 20%, 90%, 0.08);
+  --nx-interactive-selected: hsla(200, 95%, 55%, 0.12);
+
+  /* Focus ring */
+  --nx-focus-ring: 0 0 0 2px var(--nx-bg-elevated), 0 0 0 4px var(--nx-accent);
+
+  /* Chart colors */
+  --nx-chart-1: hsl(200, 95%, 55%);
+  --nx-chart-2: hsl(152, 58%, 48%);
+  --nx-chart-3: hsl(38, 88%, 55%);
+  --nx-chart-4: hsl(280, 65%, 60%);
+  --nx-chart-5: hsl(340, 70%, 58%);
+}
+
+/* ============================================================
+   THEME: SIGNATURE (Premium, Distinctive, Executive, Emerald)
+   Deep emerald/teal surfaces, metallic-inspired accents
+   ============================================================ */
+[data-theme="signature"] {
+  /* Surfaces */
+  --nx-bg-primary: hsl(168, 22%, 7%);
+  --nx-bg-secondary: hsl(168, 18%, 11%);
+  --nx-bg-elevated: hsl(168, 16%, 15%);
+  --nx-bg-sunken: hsl(168, 24%, 5%);
+  --nx-bg-overlay: hsla(168, 28%, 3%, 0.75);
+  --nx-bg-highlight: hsla(160, 70%, 45%, 0.06);
+
+  /* Text */
+  --nx-text-primary: hsl(165, 12%, 92%);
+  --nx-text-secondary: hsl(165, 8%, 58%);
+  --nx-text-muted: hsl(165, 6%, 40%);
+  --nx-text-disabled: hsl(165, 5%, 28%);
+  --nx-text-inverse: hsl(168, 22%, 7%);
+  --nx-text-on-accent: hsl(0, 0%, 100%);
+
+  /* Accent — Deep emerald with teal shift */
+  --nx-accent: hsl(160, 68%, 42%);
+  --nx-accent-hover: hsl(160, 68%, 50%);
+  --nx-accent-active: hsl(160, 68%, 36%);
+  --nx-accent-subtle: hsla(160, 68%, 42%, 0.10);
+  --nx-accent-muted: hsla(160, 68%, 42%, 0.18);
+
+  /* Semantic colors */
+  --nx-success: hsl(140, 58%, 45%);
+  --nx-success-subtle: hsla(140, 58%, 45%, 0.10);
+  --nx-success-text: hsl(140, 58%, 52%);
+  --nx-warning: hsl(42, 85%, 55%);
+  --nx-warning-subtle: hsla(42, 85%, 55%, 0.10);
+  --nx-warning-text: hsl(42, 85%, 60%);
+  --nx-error: hsl(355, 68%, 55%);
+  --nx-error-subtle: hsla(355, 68%, 55%, 0.10);
+  --nx-error-text: hsl(355, 68%, 60%);
+  --nx-critical: hsl(355, 75%, 45%);
+  --nx-critical-subtle: hsla(355, 75%, 45%, 0.10);
+  --nx-info: hsl(195, 75%, 52%);
+  --nx-info-subtle: hsla(195, 75%, 52%, 0.10);
+
+  /* Borders */
+  --nx-border: hsl(168, 14%, 19%);
+  --nx-border-hover: hsl(168, 14%, 27%);
+  --nx-border-focus: var(--nx-accent);
+  --nx-border-error: var(--nx-error);
+
+  /* Shadows */
+  --nx-shadow-xs: 0 1px 2px hsla(168, 30%, 2%, 0.25);
+  --nx-shadow-sm: 0 1px 4px hsla(168, 30%, 2%, 0.30), 0 1px 2px hsla(168, 30%, 2%, 0.20);
+  --nx-shadow-md: 0 4px 12px hsla(168, 30%, 2%, 0.35), 0 2px 4px hsla(168, 30%, 2%, 0.20);
+  --nx-shadow-lg: 0 8px 30px hsla(168, 30%, 2%, 0.40), 0 4px 8px hsla(168, 30%, 2%, 0.25);
+  --nx-shadow-xl: 0 16px 50px hsla(168, 30%, 2%, 0.50), 0 8px 16px hsla(168, 30%, 2%, 0.30);
+  --nx-shadow-glow: 0 0 24px hsla(160, 68%, 42%, 0.08);
+  --nx-shadow-accent: 0 4px 20px hsla(160, 68%, 42%, 0.15);
+
+  /* Glass / Frost */
+  --nx-glass-bg: hsla(168, 18%, 12%, 0.72);
+  --nx-glass-blur: blur(20px);
+  --nx-glass-border: hsla(168, 14%, 22%, 0.5);
+
+  /* Scrollbar */
+  --nx-scrollbar-track: hsl(168, 18%, 10%);
+  --nx-scrollbar-thumb: hsl(168, 14%, 24%);
+  --nx-scrollbar-thumb-hover: hsl(168, 14%, 34%);
+
+  /* Code */
+  --nx-code-bg: hsl(168, 20%, 10%);
+  --nx-code-text: hsl(160, 65%, 55%);
+
+  /* Interactive */
+  --nx-interactive-hover: hsla(165, 15%, 90%, 0.04);
+  --nx-interactive-active: hsla(165, 15%, 90%, 0.08);
+  --nx-interactive-selected: hsla(160, 68%, 42%, 0.12);
+
+  /* Focus ring */
+  --nx-focus-ring: 0 0 0 2px var(--nx-bg-elevated), 0 0 0 4px var(--nx-accent);
+
+  /* Chart colors */
+  --nx-chart-1: hsl(160, 68%, 42%);
+  --nx-chart-2: hsl(195, 75%, 52%);
+  --nx-chart-3: hsl(42, 85%, 55%);
+  --nx-chart-4: hsl(270, 60%, 58%);
+  --nx-chart-5: hsl(330, 65%, 55%);
+}
+
+/* ============================================================
+   BASE ELEMENT STYLES
+   ============================================================ */
+a {
+  color: var(--nx-accent);
+  text-decoration: none;
+  transition: color var(--nx-transition-fast);
+}
+
+a:hover {
+  color: var(--nx-accent-hover);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--nx-weight-semibold);
+  line-height: var(--nx-leading-tight);
+  letter-spacing: var(--nx-tracking-tight);
+  color: var(--nx-text-primary);
+}
+
+h1 { font-size: var(--nx-text-4xl); }
+h2 { font-size: var(--nx-text-3xl); }
+h3 { font-size: var(--nx-text-2xl); }
+h4 { font-size: var(--nx-text-xl); }
+h5 { font-size: var(--nx-text-lg); }
+h6 { font-size: var(--nx-text-base); font-weight: var(--nx-weight-medium); }
+
+p {
+  color: var(--nx-text-secondary);
+  line-height: var(--nx-leading-relaxed);
+}
+
+code {
+  font-family: var(--nx-font-mono);
+  font-size: 0.9em;
+  background: var(--nx-code-bg);
+  color: var(--nx-code-text);
+  padding: 0.15em 0.4em;
+  border-radius: var(--nx-radius-xs);
+}
+
+pre {
+  font-family: var(--nx-font-mono);
+  font-size: var(--nx-text-sm);
+  background: var(--nx-code-bg);
+  color: var(--nx-text-primary);
+  padding: var(--nx-space-4);
+  border-radius: var(--nx-radius-md);
+  overflow-x: auto;
+  border: 1px solid var(--nx-border);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--nx-accent-muted);
+  color: var(--nx-text-primary);
+}
+
+/* ============================================================
+   SCROLLBAR STYLING
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--nx-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nx-scrollbar-thumb);
+  border-radius: var(--nx-radius-full);
+  border: 2px solid var(--nx-scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nx-scrollbar-thumb-hover);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--nx-scrollbar-thumb) var(--nx-scrollbar-track);
+}
+
+/* ============================================================
+   FOCUS STYLES
+   ============================================================ */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--nx-focus-ring);
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+.nx-glass {
+  background: var(--nx-glass-bg);
+  backdrop-filter: var(--nx-glass-blur);
+  -webkit-backdrop-filter: var(--nx-glass-blur);
+  border: 1px solid var(--nx-glass-border);
+}
+
+.nx-glow {
+  box-shadow: var(--nx-shadow-glow);
+}
+
+.nx-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nx-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   ============================================================ */
+@keyframes nx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nx-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nx-fade-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nx-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes nx-slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes nx-slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes nx-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes nx-pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px hsla(var(--nx-accent-hsl, 200, 95%, 55%), 0.15); }
+  50% { box-shadow: 0 0 20px hsla(var(--nx-accent-hsl, 200, 95%, 55%), 0.30); }
+}
+
+@keyframes nx-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes nx-toast-in {
+  from { opacity: 0; transform: translateX(100%) scale(0.95); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes nx-progress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* ============================================================
+   COMPONENT BASE STYLES
+   ============================================================ */
+
+/* --- Skeleton Loading --- */
+.nx-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--nx-bg-sunken) 25%,
+    var(--nx-bg-secondary) 50%,
+    var(--nx-bg-sunken) 75%
+  );
+  background-size: 200% 100%;
+  animation: nx-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--nx-radius-sm);
+}
+
+/* --- Divider --- */
+.nx-divider {
+  height: 1px;
+  background: var(--nx-border);
+  border: none;
+  margin: var(--nx-space-2) 0;
+}
+
+.nx-divider--vertical {
+  width: 1px;
+  height: auto;
+  margin: 0 var(--nx-space-2);
+}
