@@ -161,8 +161,38 @@ export default function ChatPage() {
                   {m.role === 'user' ? (
                     <div style={{ whiteSpace: 'pre-wrap' }}>{m.content}</div>
                   ) : (
-                    <div className="nx-markdown" style={{ lineHeight: 1.6 }}>
-                      <ReactMarkdown>{m.content}</ReactMarkdown>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--nx-space-3)' }}>
+                      {m.content && (
+                        <div className="nx-markdown" style={{ lineHeight: 1.6 }}>
+                          <ReactMarkdown>{m.content}</ReactMarkdown>
+                        </div>
+                      )}
+                      {m.toolInvocations?.map(tool => (
+                        <div key={tool.toolCallId} style={{ 
+                          background: 'var(--nx-bg-primary)', 
+                          border: '1px solid var(--nx-border)', 
+                          borderRadius: 'var(--nx-radius-md)', 
+                          padding: 'var(--nx-space-3)',
+                          fontSize: 'var(--nx-text-sm)',
+                          fontFamily: 'monospace'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--nx-space-2)', color: 'var(--nx-text-muted)' }}>
+                            <span style={{ color: 'var(--nx-accent)' }}>🛠️</span>
+                            <span>
+                              {tool.toolName === 'readFile' ? `Reading file: ${tool.args.filePath}` : 
+                               tool.toolName === 'writeToFile' ? `Writing to: ${tool.args.filePath}` : 
+                               tool.toolName === 'runCommand' ? `Running: ${tool.args.command}` : 
+                               `Using tool: ${tool.toolName}`}
+                            </span>
+                            {tool.state === 'result' ? <span style={{ color: 'var(--nx-success)' }}>✓</span> : <span style={{ color: 'var(--nx-warning)' }}>...</span>}
+                          </div>
+                          {tool.state === 'result' && tool.toolName === 'runCommand' && (
+                            <pre style={{ marginTop: 'var(--nx-space-2)', background: '#000', color: '#0f0', padding: 'var(--nx-space-2)', borderRadius: '4px', overflowX: 'auto', maxHeight: '200px' }}>
+                              {tool.result.substring(0, 500) + (tool.result.length > 500 ? '...\n(Output truncated)' : '')}
+                            </pre>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>

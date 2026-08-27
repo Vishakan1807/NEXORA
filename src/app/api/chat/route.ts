@@ -3,6 +3,10 @@ import { NextResponse } from 'next/server';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
 import { retrieveContext, getProviderModel } from '@/lib/ai/orchestrator';
+import { getWorkspaceTools } from '@/lib/ai/tools';
+import { db } from '@/lib/db';
+import { workspaces } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 // Next.js config to allow long-running streams (max 5 mins)
 export const maxDuration = 300;
@@ -19,6 +23,16 @@ export async function POST(req: Request) {
 
     if (!workspaceId) {
       return NextResponse.json({ error: 'Please select a workspace' }, { status: 400 });
+    }
+
+    // Fetch the workspace to get the root path for tools
+    const [workspace] = await db
+      .select()
+      .from(workspaces)
+      .where(eq(workspaces.id, workspaceId));
+
+    if (!workspace) {
+      return NextResponse.json({ error: 'Workspace not found' }, { status: 404 });
     }
 
     if (!providerId || !modelId) {
@@ -56,11 +70,13 @@ Instructions:
 - Output clean, valid markdown.
 `;
 
-    // 4. Stream the response using Vercel AI SDK
+    // 4. Stream the response using Vercel AI SDK with injected Tools
     const result = await streamText({
       model: model,
       system: systemPrompt,
       messages,
+      tools: getWorkspaceTools(workspace.sourcePath),
+      maxSteps: 5, // Allow the AI to take up to 5 automatic steps (e.g., read file, then write file, then respond)
     });
 
     return result.toDataStreamResponse();
