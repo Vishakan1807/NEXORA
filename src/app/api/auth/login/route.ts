@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { users, auditLogs } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import { signSessionToken } from '@/lib/auth/jwt';
+import { createSessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     }
 
     // Success! Generate JWT token
-    const token = await signSessionToken({
+    const token = await createSessionToken({
       userId: user.id,
       email: user.email,
       role: user.role,
