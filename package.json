@@ -12,6 +12,7 @@
     "@ai-sdk/anthropic": "^4.0.44",
     "@ai-sdk/google": "^4.0.54",
     "@ai-sdk/openai": "^4.0.50",
+    "@openrouter/ai-sdk-provider": "^3.0.0",
     "adm-zip": "^0.6.0",
     "ai": "^7.0.83",
     "bcryptjs": "^3.0.3",

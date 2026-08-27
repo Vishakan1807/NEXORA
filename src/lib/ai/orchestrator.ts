@@ -6,6 +6,7 @@ import { embed } from 'ai';
 import { decrypt } from '@/lib/auth/crypto';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
 /**
  * Retrieves the most relevant codebase chunks for a given prompt using pgvector semantic search.
@@ -77,6 +78,10 @@ export async function getProviderModel(providerId: string, modelName: string) {
     case 'google':
       const google = createGoogleGenerativeAI({ apiKey });
       return google(modelName); // e.g. 'gemini-1.5-pro'
+      
+    case 'openrouter':
+      const openrouter = createOpenRouter({ apiKey });
+      return openrouter(modelName); // e.g. 'meta-llama/llama-3-70b-instruct'
       
     default:
       throw new Error(`Unsupported provider: ${providerId}`);

@@ -10,7 +10,8 @@ import { encrypt } from '@/lib/auth/crypto';
 const DEFAULT_PROVIDERS = [
   { id: 'openai', name: 'OpenAI' },
   { id: 'anthropic', name: 'Anthropic Claude' },
-  { id: 'google', name: 'Google Gemini' }
+  { id: 'google', name: 'Google Gemini' },
+  { id: 'openrouter', name: 'OpenRouter (Hundreds of LLMs)' }
 ];
 
 export async function GET(request: Request) {

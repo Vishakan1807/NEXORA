@@ -93,7 +93,7 @@ export default function SettingsPage() {
               <CardHeader style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--nx-space-3)' }}>
                   <span style={{ fontSize: '24px' }}>
-                    {provider.id === 'openai' ? '🤖' : provider.id === 'anthropic' ? '🧠' : '🌐'}
+                    {provider.id === 'openai' ? '🤖' : provider.id === 'anthropic' ? '🧠' : provider.id === 'openrouter' ? '🌌' : '🌐'}
                   </span>
                   <span className="nx-card__title">{provider.name}</span>
                 </div>
