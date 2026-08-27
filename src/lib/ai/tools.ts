@@ -19,7 +19,7 @@ function resolveAndValidatePath(workspaceRoot: string, targetPath: string): stri
 export const getWorkspaceTools = (workspaceRoot: string) => ({
   readFile: tool({
     description: 'Read the complete text content of a file in the workspace.',
-    parameters: z.object({
+    inputSchema: z.object({
       filePath: z.string().describe('The relative path to the file from the workspace root (e.g., src/index.ts)'),
     }),
     execute: async ({ filePath }: { filePath: string }) => {
@@ -37,7 +37,7 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
 
   writeToFile: tool({
     description: 'Create a new file or overwrite an existing file with new content.',
-    parameters: z.object({
+    inputSchema: z.object({
       filePath: z.string().describe('The relative path where the file should be written'),
       content: z.string().describe('The full content to write to the file'),
     }),
@@ -60,7 +60,7 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
 
   runCommand: tool({
     description: 'Execute a terminal command (e.g., npm run build, ls -la, git status) within the workspace directory. WARNING: Only use safe commands.',
-    parameters: z.object({
+    inputSchema: z.object({
       command: z.string().describe('The shell command to execute'),
     }),
     execute: async ({ command }: { command: string }) => {

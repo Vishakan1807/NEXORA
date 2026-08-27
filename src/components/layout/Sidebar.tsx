@@ -73,7 +73,7 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const { isCollapsed, toggleCollapsed, isOpen, setOpen } = useSidebarStore();
-  const { role } = useAuthStore(); // Use RBAC state
+  const user = useAuthStore(state => state.user); // Use RBAC state
 
   const sidebarClasses = [
     'nx-sidebar',
@@ -84,6 +84,7 @@ export function Sidebar() {
     .join(' ');
 
   // Filter sections based on RBAC rules
+  const role = user?.role || 'developer';
   const visibleSections = NAV_SECTIONS.filter(section => hasAccess(section.category, role));
 
   return (

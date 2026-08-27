@@ -126,8 +126,8 @@ export default function UsersPage() {
                       </Badge>
                     </td>
                     <td>
-                      <Badge variant={user.status === 'active' ? 'success' : 'neutral'}>
-                        {user.status}
+                      <Badge variant={user.isActive ? 'success' : 'neutral'}>
+                        {user.isActive ? 'active' : 'inactive'}
                       </Badge>
                     </td>
                     <td style={{ color: 'var(--nx-text-muted)' }}>

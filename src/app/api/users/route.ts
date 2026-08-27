@@ -22,7 +22,7 @@ export async function GET(req: Request) {
       name: users.name,
       email: users.email,
       role: users.role,
-      status: users.status,
+      isActive: users.isActive,
       createdAt: users.createdAt,
       lastLoginAt: users.lastLoginAt
     }).from(users);

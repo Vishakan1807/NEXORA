@@ -20,7 +20,7 @@ export async function GET(
   { params }: { params: Promise<{ workspaceId: string }> }
 ) {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get('nexora_session')?.value;
     
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

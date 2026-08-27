@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
 import { Card, CardBody, Input, Button, Badge } from '@/components/ui';
 import { toast } from '@/lib/stores';
 import ReactMarkdown from 'react-markdown';
@@ -58,14 +58,14 @@ export default function ChatPage() {
       });
   }, []);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = (useChat as any)({
     api: '/api/chat',
     body: {
       workspaceId: selectedWorkspace,
       providerId: selectedProvider,
       modelId: selectedModel
     },
-    onError: (err) => {
+    onError: (err: any) => {
       toast('error', 'Chat Error', err.message);
     }
   });
@@ -135,7 +135,7 @@ export default function ChatPage() {
               <p style={{ marginTop: 'var(--nx-space-2)' }}>Ask about your architecture, request code, or trace bugs.</p>
             </div>
           ) : (
-            messages.map(m => (
+            messages.map((m: any) => (
               <div 
                 key={m.id} 
                 style={{ 
@@ -167,7 +167,7 @@ export default function ChatPage() {
                           <ReactMarkdown>{m.content}</ReactMarkdown>
                         </div>
                       )}
-                      {m.toolInvocations?.map(tool => (
+                      {m.toolInvocations?.map((tool: any) => (
                         <div key={tool.toolCallId} style={{ 
                           background: 'var(--nx-bg-primary)', 
                           border: '1px solid var(--nx-border)', 
