@@ -2,12 +2,30 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSidebarStore } from '@/lib/stores';
-import type { NavItem } from '@/types';
+import { useSidebarStore, useAuthStore } from '@/lib/stores';
+import type { NavItem, UserRole } from '@/types';
 
-const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
+// Define which roles can access which sections
+const ADMIN_ROLES: UserRole[] = ['admin', 'super_admin'];
+const ENG_ROLES: UserRole[] = ['developer', 'qa_engineer', 'security_engineer', 'architect'];
+
+// Helper to check if user has access based on rules
+const hasAccess = (itemCategory: string, userRole: UserRole) => {
+  const isAdmin = ADMIN_ROLES.includes(userRole);
+  
+  if (isAdmin) {
+    // Admins ONLY see System and Observability (logs, users, admin, etc.)
+    return ['System', 'Observability'].includes(itemCategory);
+  } else {
+    // Non-admins see everything EXCEPT System (which contains Users/Admin tools)
+    return itemCategory !== 'System';
+  }
+};
+
+const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
   {
     label: 'Platform',
+    category: 'Platform',
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: '📊', href: '/dashboard' },
       { id: 'chat', label: 'Command', icon: '💬', href: '/dashboard/chat' },
@@ -16,6 +34,7 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: 'Engineering',
+    category: 'Engineering',
     items: [
       { id: 'code', label: 'Code', icon: '🔧', href: '/dashboard/code' },
       { id: 'qa', label: 'QA', icon: '🧪', href: '/dashboard/qa' },
@@ -25,18 +44,28 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
   },
   {
     label: 'Operations',
+    category: 'Operations',
     items: [
       { id: 'runtime', label: 'Runtime', icon: '🚀', href: '/dashboard/runtime' },
       { id: 'certification', label: 'Certification', icon: '✅', href: '/dashboard/certification' },
       { id: 'providers', label: 'AI Providers', icon: '🤖', href: '/dashboard/providers' },
-      { id: 'observability', label: 'Observability', icon: '📈', href: '/dashboard/observability' },
     ],
   },
   {
-    label: 'System',
+    label: 'Observability',
+    category: 'Observability',
     items: [
-      { id: 'settings', label: 'Settings', icon: '⚙️', href: '/dashboard/settings' },
-      { id: 'admin', label: 'Admin', icon: '🛡️', href: '/dashboard/admin' },
+      { id: 'logs', label: 'System Logs', icon: '📝', href: '/dashboard/logs' },
+      { id: 'metrics', label: 'Metrics', icon: '📈', href: '/dashboard/metrics' },
+    ],
+  },
+  {
+    label: 'System Admin',
+    category: 'System',
+    items: [
+      { id: 'users', label: 'Users & Roles', icon: '👥', href: '/dashboard/users' },
+      { id: 'settings', label: 'Global Settings', icon: '⚙️', href: '/dashboard/settings' },
+      { id: 'security_audit', label: 'Security Audit', icon: '🛡️', href: '/dashboard/audit' },
     ],
   },
 ];
@@ -44,6 +73,7 @@ const NAV_SECTIONS: { label: string; items: NavItem[] }[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const { isCollapsed, toggleCollapsed, isOpen, setOpen } = useSidebarStore();
+  const { role } = useAuthStore(); // Use RBAC state
 
   const sidebarClasses = [
     'nx-sidebar',
@@ -52,6 +82,9 @@ export function Sidebar() {
   ]
     .filter(Boolean)
     .join(' ');
+
+  // Filter sections based on RBAC rules
+  const visibleSections = NAV_SECTIONS.filter(section => hasAccess(section.category, role));
 
   return (
     <>
@@ -69,13 +102,15 @@ export function Sidebar() {
           <div className="nx-sidebar__logo">N</div>
           <div className="nx-sidebar__brand-text">
             <span className="nx-sidebar__product-name">NEXORA</span>
-            <span className="nx-sidebar__product-tagline">AI Engineering</span>
+            <span className="nx-sidebar__product-tagline">
+              {ADMIN_ROLES.includes(role) ? 'System Admin' : 'AI Engineering'}
+            </span>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="nx-sidebar__nav">
-          {NAV_SECTIONS.map((section) => (
+          {visibleSections.map((section) => (
             <div key={section.label} className="nx-sidebar__section">
               <div className="nx-sidebar__section-label">
                 {isCollapsed ? '—' : section.label}

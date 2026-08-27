@@ -2,8 +2,30 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { NexoraTheme, Toast, Notification, NotificationSeverity } from '@/types';
+import type { NexoraTheme, Toast, Notification, NotificationSeverity, UserRole } from '@/types';
 import { DEFAULT_THEME } from '@/types';
+
+// ============================================================
+// AUTH STORE (Mock for Phase 1 development)
+// ============================================================
+interface AuthState {
+  role: UserRole;
+  setRole: (role: UserRole) => void;
+  isAuthenticated: boolean;
+}
+
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      role: 'developer', // Default non-admin role
+      setRole: (role) => set({ role }),
+      isAuthenticated: true, // Mocked to true
+    }),
+    {
+      name: 'nexora-auth',
+    }
+  )
+);
 
 // ============================================================
 // THEME STORE
