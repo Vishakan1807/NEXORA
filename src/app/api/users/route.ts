@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 export async function GET(req: Request) {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get('nexora_session')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const session = await verifySessionToken(token);

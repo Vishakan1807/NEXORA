@@ -12,7 +12,7 @@ import { analyzeWorkspace } from '@/lib/workspace/parser';
 export async function POST(request: Request) {
   try {
     // 1. Auth check
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get('nexora_session')?.value;
     
     if (!token) {

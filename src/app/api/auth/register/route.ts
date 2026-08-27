@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     });
 
     // Set HTTP-only cookie
-    cookies().set({
+    (await cookies()).set({
       name: 'nexora_session',
       value: token,
       httpOnly: true,

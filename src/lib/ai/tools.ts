@@ -22,7 +22,7 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
     parameters: z.object({
       filePath: z.string().describe('The relative path to the file from the workspace root (e.g., src/index.ts)'),
     }),
-    execute: async ({ filePath }) => {
+    execute: async ({ filePath }: { filePath: string }) => {
       try {
         const fullPath = resolveAndValidatePath(workspaceRoot, filePath);
         if (!fs.existsSync(fullPath)) {
@@ -41,7 +41,7 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
       filePath: z.string().describe('The relative path where the file should be written'),
       content: z.string().describe('The full content to write to the file'),
     }),
-    execute: async ({ filePath, content }) => {
+    execute: async ({ filePath, content }: { filePath: string, content: string }) => {
       try {
         const fullPath = resolveAndValidatePath(workspaceRoot, filePath);
         const dir = path.dirname(fullPath);
@@ -63,7 +63,7 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
     parameters: z.object({
       command: z.string().describe('The shell command to execute'),
     }),
-    execute: async ({ command }) => {
+    execute: async ({ command }: { command: string }) => {
       try {
         // Basic safety check for incredibly dangerous commands
         const dangerousPrefixes = ['rm -rf /', 'mkfs', 'dd '];

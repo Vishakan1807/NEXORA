@@ -13,7 +13,7 @@ export const maxDuration = 300;
 
 export async function POST(req: Request) {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get('nexora_session')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const session = await verifySessionToken(token);
@@ -76,10 +76,9 @@ Instructions:
       system: systemPrompt,
       messages,
       tools: getWorkspaceTools(workspace.sourcePath),
-      maxSteps: 5, // Allow the AI to take up to 5 automatic steps (e.g., read file, then write file, then respond)
     });
 
-    return result.toDataStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error: any) {
     console.error('Chat error:', error);
     return NextResponse.json({ error: error.message || 'Chat request failed' }, { status: 500 });

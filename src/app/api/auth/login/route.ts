@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     await db.update(users).set({ lastLoginAt: new Date() }).where(eq(users.id, user.id));
 
     // Set HTTP-only cookie
-    cookies().set({
+    (await cookies()).set({
       name: 'nexora_session',
       value: token,
       httpOnly: true,

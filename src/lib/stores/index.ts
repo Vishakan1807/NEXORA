@@ -6,20 +6,27 @@ import type { NexoraTheme, Toast, Notification, NotificationSeverity, UserRole }
 import { DEFAULT_THEME } from '@/types';
 
 // ============================================================
-// AUTH STORE (Mock for Phase 1 development)
+// AUTH STORE
 // ============================================================
-interface AuthState {
+interface User {
+  id: string;
+  email: string;
+  name?: string;
   role: UserRole;
-  setRole: (role: UserRole) => void;
+}
+
+interface AuthState {
+  user: User | null;
   isAuthenticated: boolean;
+  setAuth: (user: User | null) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      role: 'developer', // Default non-admin role
-      setRole: (role) => set({ role }),
-      isAuthenticated: true, // Mocked to true
+      user: null,
+      isAuthenticated: false,
+      setAuth: (user) => set({ user, isAuthenticated: !!user }),
     }),
     {
       name: 'nexora-auth',

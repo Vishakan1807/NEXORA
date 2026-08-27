@@ -7,10 +7,10 @@ import { cookies } from 'next/headers';
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get('nexora_session')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const session = await verifySessionToken(token);
@@ -28,7 +28,7 @@ export async function POST(
     }
 
     // A normal admin cannot demote a super_admin
-    const [targetUser] = await db.select().from(users).where(eq(users.id, params.id));
+    const [targetUser] = await db.select().from(users).where(eq(users.id, (await params).id));
     if (!targetUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     if (targetUser.role === 'super_admin' && session.role !== 'super_admin') {
@@ -40,7 +40,7 @@ export async function POST(
       return NextResponse.json({ error: 'You cannot change your own role' }, { status: 400 });
     }
 
-    await db.update(users).set({ role }).where(eq(users.id, params.id));
+    await db.update(users).set({ role }).where(eq(users.id, (await params).id));
 
     return NextResponse.json({ success: true, message: `User promoted to ${role}` });
   } catch (error) {

@@ -10,7 +10,7 @@ import { embedMany } from 'ai';
 
 export async function POST(
   request: Request,
-  { params }: { params: { workspaceId: string } }
+  { params }: { params: Promise<{ workspaceId: string }> }
 ) {
   try {
     const cookieStore = cookies();
@@ -25,7 +25,7 @@ export async function POST(
       .select()
       .from(workspaces)
       .where(and(
-        eq(workspaces.id, params.workspaceId),
+        eq(workspaces.id, (await params).workspaceId),
         eq(workspaces.userId, session.userId)
       ));
 
