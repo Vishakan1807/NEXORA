@@ -211,6 +211,7 @@ export function Avatar({ name, src, size = 'md', className = '' }: { name: strin
 
   return (
     <div className={`nx-avatar nx-avatar--${size} ${className}`} title={name}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       {src ? <img src={src} alt={name} /> : initials}
     </div>
   );

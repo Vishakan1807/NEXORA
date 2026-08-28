@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Spinner, StatusDot } from '@/components/ui';
+import { Spinner } from '@/components/ui';
 
 export interface FileNode {
   name: string;
@@ -30,15 +30,17 @@ export function FileTree({ workspaceId, onFileSelect }: FileTreeProps) {
       if (!res.ok) throw new Error(data.error);
       setNodes(data.files || []);
       setCurrentPath(path);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
     fetchFiles('/');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceId]);
 
   const handleNodeClick = (node: FileNode) => {

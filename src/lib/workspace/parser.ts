@@ -74,7 +74,7 @@ export function analyzeWorkspace(workspacePath: string): ProjectMeta {
             if (deps['react']) frameworksSet.add('React');
             if (deps['express']) frameworksSet.add('Express');
             if (deps['jest'] || deps['vitest'] || deps['mocha']) meta.hasTests = true;
-          } catch (e) {
+          } catch {
             // ignore
           }
         }

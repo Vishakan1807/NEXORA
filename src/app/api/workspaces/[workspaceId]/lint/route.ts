@@ -57,10 +57,24 @@ export async function POST(
           const results = JSON.parse(err.stdout);
           return NextResponse.json({ results });
         } catch (parseErr) {
+          // If it's not JSON, it might be a setup error like missing eslint.config.js
+          const outputStr = err.stdout + (err.stderr || '');
+          if (outputStr.includes('couldn\'t find') || outputStr.includes('eslint.config')) {
+            return NextResponse.json({ 
+              error: 'ESLint configuration not found in this workspace. Please ensure an eslint.config.* or .eslintrc.* file exists.' 
+            }, { status: 400 });
+          }
           return NextResponse.json({ error: 'Failed to parse linter output', details: err.stdout }, { status: 500 });
         }
       }
       
+      const errMsg = err.message || '';
+      if (errMsg.includes('couldn\'t find') || errMsg.includes('eslint.config')) {
+         return NextResponse.json({ 
+           error: 'ESLint configuration not found in this workspace. Please ensure an eslint.config.* or .eslintrc.* file exists.' 
+         }, { status: 400 });
+      }
+
       return NextResponse.json({ error: 'Failed to run linter: ' + err.message }, { status: 500 });
     }
 

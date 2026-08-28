@@ -7,7 +7,6 @@ import type { NavItem, UserRole } from '@/types';
 
 // Define which roles can access which sections
 const ADMIN_ROLES: UserRole[] = ['admin', 'super_admin'];
-const ENG_ROLES: UserRole[] = ['developer', 'qa_engineer', 'security_engineer', 'architect'];
 
 const hasAccess = (itemCategory: string, userRole: UserRole) => {
   const isAdmin = ADMIN_ROLES.includes(userRole);
@@ -82,7 +81,7 @@ export function Sidebar() {
       setAuth(null);
       toast('success', 'Logged Out', 'You have been successfully logged out.');
       router.push('/login');
-    } catch (error) {
+    } catch {
       toast('error', 'Logout Failed', 'An error occurred during logout.');
     }
   };

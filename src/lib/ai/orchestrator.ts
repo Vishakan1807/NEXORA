@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import { workspaceDocuments, providers } from '@/lib/db/schema';
 import { eq, sql } from 'drizzle-orm';
-import { openai } from '@ai-sdk/openai';
+import { openai, createOpenAI } from '@ai-sdk/openai';
 import { embed } from 'ai';
 import { decrypt } from '@/lib/auth/crypto';
 import { createAnthropic } from '@ai-sdk/anthropic';
@@ -36,7 +36,7 @@ export async function retrieveContext(workspaceId: string, prompt: string) {
     })
     .from(workspaceDocuments)
     .where(eq(workspaceDocuments.workspaceId, workspaceId))
-    .orderBy(desc => sql`${workspaceDocuments.embedding} <=> ${embeddingString}::vector`)
+    .orderBy(sql`${workspaceDocuments.embedding} <=> ${embeddingString}::vector`)
     .limit(5);
 
   if (relevantChunks.length === 0) {
@@ -68,7 +68,7 @@ export async function getProviderModel(providerId: string, modelName: string) {
   switch (providerId) {
     case 'openai':
       // The user's BYOK OpenAI key overrides the system one for chat
-      const userOpenAI = require('@ai-sdk/openai').createOpenAI({ apiKey });
+      const userOpenAI = createOpenAI({ apiKey });
       return userOpenAI(modelName); // e.g. 'gpt-4o'
       
     case 'anthropic':

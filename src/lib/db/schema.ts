@@ -1,5 +1,5 @@
-import { pgTable, text, timestamp, boolean, uuid, jsonb, integer, vector, index } from 'drizzle-orm/pg-core';
-import type { UserRole, WorkspaceStatus, WorkspaceSourceType, ProviderStatus, NotificationSeverity, WorkflowStatus } from '@/types';
+import { pgTable, text, timestamp, boolean, uuid, jsonb, integer, vector } from 'drizzle-orm/pg-core';
+import type { UserRole, WorkspaceStatus, WorkspaceSourceType, ProviderStatus, WorkflowStatus } from '@/types';
 
 // ============================================================
 // USERS

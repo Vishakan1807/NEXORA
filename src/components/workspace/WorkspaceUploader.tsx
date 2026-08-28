@@ -82,8 +82,8 @@ export function WorkspaceUploader({ onUploadComplete }: { onUploadComplete?: () 
       if (onUploadComplete) onUploadComplete();
       else router.refresh();
       
-    } catch (error: any) {
-      toast('error', 'Upload Failed', error.message);
+    } catch (error) {
+      toast('error', 'Upload Failed', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setTimeout(() => {
         setIsUploading(false);
@@ -122,8 +122,8 @@ export function WorkspaceUploader({ onUploadComplete }: { onUploadComplete?: () 
       if (onUploadComplete) onUploadComplete();
       else router.refresh();
       
-    } catch (error: any) {
-      toast('error', 'Mapping Failed', error.message);
+    } catch (error) {
+      toast('error', 'Mapping Failed', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setTimeout(() => {
         setIsUploading(false);

@@ -29,8 +29,8 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
           return `Error: File not found at ${filePath}`;
         }
         return fs.readFileSync(fullPath, 'utf8');
-      } catch (error: any) {
-        return `Error reading file: ${error.message}`;
+      } catch (error) {
+        return `Error reading file: ${error instanceof Error ? error.message : 'Unknown error'}`;
       }
     },
   }),
@@ -52,8 +52,8 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
         
         fs.writeFileSync(fullPath, content, 'utf8');
         return `Successfully wrote to ${filePath}`;
-      } catch (error: any) {
-        return `Error writing file: ${error.message}`;
+      } catch (error) {
+        return `Error writing file: ${error instanceof Error ? error.message : 'Unknown error'}`;
       }
     },
   }),
@@ -80,8 +80,8 @@ export const getWorkspaceTools = (workspaceRoot: string) => ({
           return `Command executed with warnings/errors:\n${stderr}`;
         }
         return `Command output:\n${stdout}${stderr ? '\nStderr:\n' + stderr : ''}`;
-      } catch (error: any) {
-        return `Command failed:\n${error.message}`;
+      } catch (error) {
+        return `Command failed:\n${error instanceof Error ? error.message : 'Unknown error'}`;
       }
     },
   })

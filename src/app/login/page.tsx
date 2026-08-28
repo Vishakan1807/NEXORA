@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardBody, Input, Button, Badge } from '@/components/ui';
+import { Card, CardBody, CardHeader, Input, Button } from '@/components/ui';
 import { useAuthStore, toast } from '@/lib/stores';
 
 export default function LoginPage() {
@@ -43,7 +43,7 @@ export default function LoginPage() {
       } else {
         toast('error', 'Authentication Failed', data.error);
       }
-    } catch (err) {
+    } catch {
       toast('error', 'Network Error', 'Failed to reach authentication server');
     } finally {
       setIsLoading(false);

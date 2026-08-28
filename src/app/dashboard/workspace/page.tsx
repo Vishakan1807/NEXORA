@@ -43,6 +43,7 @@ export default function WorkspacePage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/rules-of-hooks
     fetchWorkspaces();
   }, []);
 
