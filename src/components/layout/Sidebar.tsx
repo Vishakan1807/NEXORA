@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useSidebarStore, useAuthStore } from '@/lib/stores';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSidebarStore, useAuthStore, toast } from '@/lib/stores';
 import type { NavItem, UserRole } from '@/types';
 
 // Define which roles can access which sections
@@ -71,8 +71,21 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { isCollapsed, toggleCollapsed, isOpen, setOpen } = useSidebarStore();
-  const user = useAuthStore(state => state.user); // Use RBAC state
+  const user = useAuthStore(state => state.user);
+  const setAuth = useAuthStore(state => state.setAuth);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setAuth(null);
+      toast('success', 'Logged Out', 'You have been successfully logged out.');
+      router.push('/login');
+    } catch (error) {
+      toast('error', 'Logout Failed', 'An error occurred during logout.');
+    }
+  };
 
   const sidebarClasses = [
     'nx-sidebar',
@@ -136,6 +149,21 @@ export function Sidebar() {
             </div>
           ))}
         </nav>
+
+        {/* Logout button */}
+        <button 
+          className="nx-sidebar__toggle" 
+          onClick={handleLogout} 
+          style={{ 
+            color: 'var(--nx-error)', 
+            borderBottom: '1px solid var(--nx-border)',
+            borderTop: 'none',
+            justifyContent: isCollapsed ? 'center' : 'flex-start'
+          }}
+          title="Log out"
+        >
+          {isCollapsed ? '🚪' : '🚪 Log Out'}
+        </button>
 
         {/* Collapse toggle */}
         <button className="nx-sidebar__toggle" onClick={toggleCollapsed} aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
