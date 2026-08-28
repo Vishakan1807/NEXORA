@@ -1,4 +1,13 @@
-import { Card, CardBody, EmptyState } from '@/components/ui';
+const fs = require('fs');
+const path = require('path');
+
+const routes = [
+  'code', 'qa', 'security', 'performance',
+  'runtime', 'certification', 'providers',
+  'logs', 'metrics', 'settings', 'audit'
+];
+
+const content = `import { Card, CardBody, EmptyState } from '@/components/ui';
 
 export default function ComingSoonPage() {
   return (
@@ -19,3 +28,11 @@ export default function ComingSoonPage() {
     </div>
   );
 }
+`;
+
+routes.forEach(route => {
+  const dir = path.join('src', 'app', 'dashboard', route);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'page.tsx'), content);
+});
+console.log('Created placeholder pages.');

@@ -9,15 +9,14 @@ import type { NavItem, UserRole } from '@/types';
 const ADMIN_ROLES: UserRole[] = ['admin', 'super_admin'];
 const ENG_ROLES: UserRole[] = ['developer', 'qa_engineer', 'security_engineer', 'architect'];
 
-// Helper to check if user has access based on rules
 const hasAccess = (itemCategory: string, userRole: UserRole) => {
   const isAdmin = ADMIN_ROLES.includes(userRole);
   
   if (isAdmin) {
-    // Admins ONLY see System and Observability (logs, users, admin, etc.)
-    return ['System', 'Observability'].includes(itemCategory);
+    // Admins ONLY see Platform (Dashboard), System (Admin tools), and Observability
+    return ['Platform', 'System', 'Observability'].includes(itemCategory);
   } else {
-    // Non-admins see everything EXCEPT System (which contains Users/Admin tools)
+    // Non-admins see everything EXCEPT System (Admin tools)
     return itemCategory !== 'System';
   }
 };
