@@ -3,6 +3,7 @@ import './globals.css';
 import './components.css';
 import './layout.css';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { ToastContainer } from '@/components/layout/ToastContainer';
 
 export const metadata: Metadata = {
   title: 'NEXORA — AI Engineering & Orchestration Platform',
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           {children}
+          <ToastContainer />
         </ThemeProvider>
       </body>
     </html>

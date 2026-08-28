@@ -17,7 +17,6 @@ export default function DashboardLayout({
         </main>
         <Statusbar />
       </div>
-      <ToastContainer />
     </div>
   );
 }
