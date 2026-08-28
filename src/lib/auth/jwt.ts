@@ -1,9 +1,10 @@
 import { jwtVerify, SignJWT } from 'jose';
 import type { UserRole } from '@/types';
 
-// Use a secure key in production (from env)
-const JWT_SECRET_KEY = process.env.JWT_SECRET || 'super_secret_jwt_key_for_nexora_change_me_in_production';
-const secretKey = new TextEncoder().encode(JWT_SECRET_KEY);
+function getSecretKey() {
+  const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_for_nexora_change_me_in_production';
+  return new TextEncoder().encode(secret);
+}
 
 export interface SessionPayload {
   userId: string;
@@ -19,7 +20,7 @@ export async function createSessionToken(payload: SessionPayload): Promise<strin
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d') // 7 days expiration
-    .sign(secretKey);
+    .sign(getSecretKey());
 }
 
 /**
@@ -27,9 +28,10 @@ export async function createSessionToken(payload: SessionPayload): Promise<strin
  */
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, secretKey);
+    const { payload } = await jwtVerify(token, getSecretKey());
     return payload as unknown as SessionPayload;
   } catch (error) {
+    console.error('JWT Verification failed:', error);
     return null; // Invalid or expired token
   }
 }
