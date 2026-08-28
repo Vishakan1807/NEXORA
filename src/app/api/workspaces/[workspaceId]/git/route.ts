@@ -41,9 +41,14 @@ export async function GET(
 
     const basePath = workspace.sourcePath;
 
-    // Check if it's a git repo
+    // Check if it's a git repo. If not, initialize it so the diff engine works!
     if (!fs.existsSync(path.join(basePath, '.git'))) {
-       return NextResponse.json({ error: 'Not a git repository' }, { status: 400 });
+       try {
+         await execAsync('git init && git add . && git commit -m "Initial commit by NEXORA"', { cwd: basePath });
+       } catch (err: any) {
+         console.warn('Failed to auto-init git:', err.message);
+         return NextResponse.json({ error: 'Not a git repository and auto-init failed' }, { status: 400 });
+       }
     }
 
     if (action === 'status') {
