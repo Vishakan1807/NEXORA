@@ -130,7 +130,7 @@ export default function CodeStudioPage() {
       <div className="nx-page">
         <div className="nx-page__header">
           <h1 className="nx-page__title">Code Studio</h1>
-          <p className="nx-page__description">Please map a workspace first to view code and run diagnostics.</p>
+          <p className="nx-page__description">Please upload a project first to view code and run diagnostics.</p>
         </div>
       </div>
     );
@@ -170,10 +170,10 @@ export default function CodeStudioPage() {
         {/* Left Pane: Explorer */}
         <div style={{ width: '250px', flexShrink: 0, display: 'flex', flexDirection: 'column', background: 'var(--nx-bg-primary)', borderRadius: 'var(--nx-radius)', border: '1px solid var(--nx-border)' }}>
           <div style={{ padding: 'var(--nx-space-3)', borderBottom: '1px solid var(--nx-border)', fontWeight: 'var(--nx-weight-semibold)', fontSize: 'var(--nx-text-sm)' }}>
-            Workspace Files
+            Project Files
           </div>
           <div style={{ flex: 1, overflow: 'auto' }}>
-            {selectedWorkspace && (
+            {selectedWorkspace ? (
               <FileTree 
                 workspaceId={selectedWorkspace} 
                 onFileSelect={(path) => {
@@ -182,6 +182,10 @@ export default function CodeStudioPage() {
                   setSelectedFile(cleanPath);
                 }}
               />
+            ) : (
+              <div style={{ padding: 'var(--nx-space-4)', color: 'var(--nx-error)', textAlign: 'center', fontSize: 'var(--nx-text-sm)' }}>
+                Project not found
+              </div>
             )}
           </div>
         </div>
