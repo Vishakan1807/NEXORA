@@ -37,7 +37,7 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     items: [
       { id: 'dashboard', label: 'Command Center', icon: '📊', href: '/dashboard' },
       { id: 'projects', label: 'Projects', icon: '📁', href: '/dashboard/projects' },
-      { id: 'workspace', label: 'Workspace', icon: '📂', href: '/dashboard/workspace' },
+      { id: 'workspace', label: 'Upload Project Code', icon: '📂', href: '/dashboard/project-code' },
       { id: 'qa', label: 'Client Q&A', icon: '❓', href: '/dashboard/qa' },
     ],
   },

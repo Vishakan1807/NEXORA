@@ -6,8 +6,7 @@ import { toast, useAuthStore } from '@/lib/stores';
 import { isAdmin } from '@/types';
 
 const QUICK_ACTIONS = [
-  { icon: '📂', label: 'Map Workspace', description: 'Connect a project directory', roles: ['admin', 'super_admin', 'organizer', 'developer'] },
-  { icon: '📤', label: 'Upload Project', description: 'Upload files or ZIP archive', roles: ['admin', 'super_admin', 'organizer', 'developer'] },
+  { icon: '📤', label: 'Upload Project Code', description: 'Upload files or ZIP archive', actionUrl: '/dashboard/project-code', roles: ['admin', 'super_admin', 'developer'] },
   { icon: '🔍', label: 'Analyze Repository', description: 'Start project intelligence', roles: ['developer'] },
   { icon: '🧪', label: 'Run QA Suite', description: 'Execute full QA pipeline', roles: ['developer'] },
   { icon: '🔒', label: 'Security Scan', description: 'OWASP-aligned analysis', roles: ['developer'] },

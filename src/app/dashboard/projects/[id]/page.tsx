@@ -145,25 +145,27 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
         </CardHeader>
         <CardBody style={{ paddingTop: 0 }}>
           
-          {/* Add Member Form */}
-          <div style={{ display: 'flex', gap: 'var(--nx-space-3)', paddingBottom: 'var(--nx-space-4)', marginBottom: 'var(--nx-space-4)', borderBottom: '1px solid var(--nx-border)' }}>
-            <select 
-              className="nx-input nx-input--md" 
-              value={selectedUser} 
-              onChange={(e) => setSelectedUser(e.target.value)}
-              style={{ flex: 1, maxWidth: '400px' }}
-            >
-              <option value="">Select a user to add...</option>
-              {availableUsers.map(u => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.email}) - {u.role}
-                </option>
-              ))}
-            </select>
-            <Button variant="primary" disabled={!selectedUser || isAdding} onClick={handleAddMember}>
-              {isAdding ? <Spinner size="sm" /> : '+ Add Member'}
-            </Button>
-          </div>
+          {/* Add Member Form - Only for Organizers/Admins */}
+          {(auth?.role === 'organizer' || auth?.role === 'admin' || auth?.role === 'super_admin') && (
+            <div style={{ display: 'flex', gap: 'var(--nx-space-3)', paddingBottom: 'var(--nx-space-4)', marginBottom: 'var(--nx-space-4)', borderBottom: '1px solid var(--nx-border)' }}>
+              <select 
+                className="nx-input nx-input--md" 
+                value={selectedUser} 
+                onChange={(e) => setSelectedUser(e.target.value)}
+                style={{ flex: 1, maxWidth: '400px' }}
+              >
+                <option value="">Select a user to add...</option>
+                {availableUsers.map(u => (
+                  <option key={u.id} value={u.id}>
+                    {u.name} ({u.email}) - {u.role}
+                  </option>
+                ))}
+              </select>
+              <Button variant="primary" disabled={!selectedUser || isAdding} onClick={handleAddMember}>
+                {isAdding ? <Spinner size="sm" /> : '+ Add Member'}
+              </Button>
+            </div>
+          )}
 
           {/* Members List */}
           {mappedMembers.length === 0 ? (
@@ -203,7 +205,9 @@ export default function ProjectDetailsPage({ params }: { params: Promise<{ id: s
                       </td>
                       <td style={{ color: 'var(--nx-text-muted)' }}>{new Date(member.createdAt).toLocaleDateString()}</td>
                       <td>
-                        <Button variant="secondary" size="sm" onClick={() => handleRemoveMember(member.userId)}>Remove</Button>
+                        {(auth?.role === 'organizer' || auth?.role === 'admin' || auth?.role === 'super_admin') ? (
+                          <Button variant="secondary" size="sm" onClick={() => handleRemoveMember(member.userId)}>Remove</Button>
+                        ) : '-'}
                       </td>
                     </tr>
                   ))}

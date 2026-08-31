@@ -18,7 +18,7 @@ const NON_ADMIN_ROUTES = [
   '/dashboard/performance',
   '/dashboard/runtime',
   '/dashboard/certification',
-  '/dashboard/workspace',
+  '/dashboard/project-code',
   '/dashboard/chat',
 ];
 
