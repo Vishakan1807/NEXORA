@@ -61,8 +61,8 @@ export async function POST(request: Request) {
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    // Ensure Admin access
-    if (session.role !== 'admin' && session.role !== 'super_admin') {
+    // Only admins can modify providers
+    if (session.role !== 'admin') {
       return NextResponse.json({ error: 'Admin access required to modify global API keys' }, { status: 403 });
     }
 

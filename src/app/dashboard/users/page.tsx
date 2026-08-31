@@ -135,27 +135,18 @@ export default function UsersPage() {
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: 'var(--nx-space-2)' }}>
-                        {user.role === 'developer' ? (
-                          <Button 
-                            variant="secondary" 
-                            size="sm" 
-                            disabled={isUpdating === user.id}
-                            onClick={() => handleRoleChange(user.id, 'admin')}
-                          >
-                            Promote to Admin
-                          </Button>
-                        ) : user.role === 'admin' ? (
-                          <Button 
-                            variant="danger" 
-                            size="sm" 
-                            disabled={isUpdating === user.id || auth?.id === user.id}
-                            onClick={() => handleRoleChange(user.id, 'developer')}
-                          >
-                            Demote
-                          </Button>
-                        ) : (
-                          <span style={{ fontSize: 'var(--nx-text-xs)', color: 'var(--nx-text-muted)' }}>Super Admin</span>
-                        )}
+                        <select 
+                          className="nx-input nx-input--sm" 
+                          value={user.role}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                          disabled={isUpdating === user.id || auth?.id === user.id}
+                        >
+                          <option value="client">Client</option>
+                          <option value="developer">Developer</option>
+                          <option value="organizer">Organizer</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                        {isUpdating === user.id && <Spinner size="sm" />}
                       </div>
                     </td>
                   </tr>

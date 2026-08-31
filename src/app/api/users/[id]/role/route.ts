@@ -16,24 +16,19 @@ export async function POST(
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    // ONLY super_admin or admin can promote/demote
-    if (session.role !== 'super_admin' && session.role !== 'admin') {
+    // ONLY admin can promote/demote
+    if (session.role !== 'admin') {
       return NextResponse.json({ error: 'Admin privileges required' }, { status: 403 });
     }
 
     const { role } = await req.json();
 
-    if (role !== 'admin' && role !== 'developer') {
+    if (role !== 'admin' && role !== 'developer' && role !== 'organizer' && role !== 'client') {
       return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
-    // A normal admin cannot demote a super_admin
     const [targetUser] = await db.select().from(users).where(eq(users.id, (await params).id));
     if (!targetUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-
-    if (targetUser.role === 'super_admin' && session.role !== 'super_admin') {
-      return NextResponse.json({ error: 'Cannot modify a super admin' }, { status: 403 });
-    }
 
     // You cannot demote yourself
     if (targetUser.id === session.userId) {

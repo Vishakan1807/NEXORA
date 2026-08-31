@@ -5,8 +5,8 @@ import { cookies } from 'next/headers';
 import { retrieveContext, getProviderModel } from '@/lib/ai/orchestrator';
 import { getWorkspaceTools } from '@/lib/ai/tools';
 import { db } from '@/lib/db';
-import { workspaces } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { workspaces, workspaceMembers } from '@/lib/db/schema';
+import { eq, sql } from 'drizzle-orm';
 
 // Next.js config to allow long-running streams (max 5 mins)
 export const maxDuration = 300;
@@ -33,6 +33,21 @@ export async function POST(req: Request) {
 
     if (!workspace) {
       return NextResponse.json({ error: 'Workspace not found' }, { status: 404 });
+    }
+
+    // Check Authorization: User must be the owner OR a mapped member
+    if (workspace.userId !== session.userId) {
+      // Not the owner, check members table
+      const [membership] = await db
+        .select()
+        .from(workspaceMembers)
+        .where(
+          sql`${workspaceMembers.workspaceId} = ${workspaceId} AND ${workspaceMembers.userId} = ${session.userId}`
+        );
+        
+      if (!membership) {
+        return NextResponse.json({ error: 'You do not have access to this workspace' }, { status: 403 });
+      }
     }
 
     if (!providerId || !modelId) {

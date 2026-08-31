@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { workspaces } from '@/lib/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { workspaces, workspaceMembers } from '@/lib/db/schema';
+import { eq, desc, inArray } from 'drizzle-orm';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
 
@@ -19,14 +19,36 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
     }
 
-    // Fetch workspaces for the authenticated user
-    const userWorkspaces = await db
+    // 1. Fetch workspaces the user owns (if they are an organizer)
+    const ownedWorkspaces = await db
       .select()
       .from(workspaces)
-      .where(eq(workspaces.userId, session.userId))
-      .orderBy(desc(workspaces.updatedAt));
+      .where(eq(workspaces.userId, session.userId));
 
-    return NextResponse.json({ workspaces: userWorkspaces });
+    // 2. Fetch workspaces they are mapped to (if developer/client)
+    const mappedLinks = await db
+      .select({ workspaceId: workspaceMembers.workspaceId })
+      .from(workspaceMembers)
+      .where(eq(workspaceMembers.userId, session.userId));
+      
+    const mappedIds = mappedLinks.map(l => l.workspaceId);
+    let mappedWorkspaces: typeof ownedWorkspaces = [];
+    
+    if (mappedIds.length > 0) {
+      mappedWorkspaces = await db
+        .select()
+        .from(workspaces)
+        .where(inArray(workspaces.id, mappedIds));
+    }
+
+    // Combine and deduplicate
+    const combined = [...ownedWorkspaces, ...mappedWorkspaces];
+    const uniqueWorkspaces = Array.from(new Map(combined.map(w => [w.id, w])).values());
+    
+    // Sort by updated at
+    uniqueWorkspaces.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+    return NextResponse.json({ workspaces: uniqueWorkspaces });
   } catch (error) {
     console.error('Error fetching workspaces:', error);
     return NextResponse.json({ error: 'Failed to fetch workspaces' }, { status: 500 });

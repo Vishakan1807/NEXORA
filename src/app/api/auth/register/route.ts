@@ -24,8 +24,8 @@ export async function POST(req: Request) {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // If for some reason admin@gmail.com registers via UI instead of script, make them super_admin
-    const role = email === 'admin@gmail.com' ? 'super_admin' : 'developer';
+    // admin@gmail.com registers via UI instead of script, make them admin
+    const role = email === 'admin@gmail.com' ? 'admin' : 'client';
 
     // Insert user
     const [newUser] = await db.insert(users).values({

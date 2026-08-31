@@ -12,8 +12,8 @@ export async function GET(req: Request) {
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    // ONLY super_admin or admin can view users
-    if (session.role !== 'super_admin' && session.role !== 'admin') {
+    // Only admin can view all users
+    if (session.role !== 'admin' && session.role !== 'organizer') {
       return NextResponse.json({ error: 'Admin privileges required' }, { status: 403 });
     }
 

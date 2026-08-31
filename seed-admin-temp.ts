@@ -20,7 +20,7 @@ async function seedAdmin() {
     email,
     passwordHash,
     name: 'Super Admin',
-    role: 'super_admin',
+    role: 'admin',
     isActive: true,
     emailVerified: true
   });

@@ -9,7 +9,7 @@ export const users = pgTable('users', {
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
   name: text('name').notNull(),
-  role: text('role').$type<UserRole>().default('developer').notNull(),
+  role: text('role').$type<UserRole>().default('client').notNull(),
   isActive: boolean('is_active').default(true).notNull(),
   emailVerified: boolean('email_verified').default(false).notNull(),
   avatar: text('avatar'),
@@ -42,6 +42,16 @@ export const workspaces = pgTable('workspaces', {
   projectMeta: jsonb('project_meta'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// ============================================================
+// WORKSPACE MEMBERS (Multi-Tenant Mapping)
+// ============================================================
+export const workspaceMembers = pgTable('workspace_members', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  workspaceId: uuid('workspace_id').references(() => workspaces.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 // ============================================================

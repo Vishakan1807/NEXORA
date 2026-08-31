@@ -20,6 +20,10 @@ const hasAccess = (itemCategory: string, itemId: string, userRole: UserRole) => 
     // Client: Q&A and Settings ONLY.
     if (itemId === 'qa' || itemId === 'settings') return true;
     return false;
+  } else if (userRole === 'organizer') {
+    // Organizer: Dashboard, Workspace, Users & Roles, Settings
+    if (itemId === 'dashboard' || itemId === 'workspace' || itemId === 'users' || itemId === 'settings') return true;
+    return false;
   }
   return false;
 };
@@ -128,7 +132,7 @@ export function Sidebar() {
           <div className="nx-sidebar__brand-text">
             <span className="nx-sidebar__product-name">NEXORA</span>
             <span className="nx-sidebar__product-tagline">
-              {ADMIN_ROLES.includes(role) ? 'System Admin' : 'AI Engineering'}
+              {role === 'admin' ? 'System Admin' : role === 'client' ? 'Client Portal' : role === 'organizer' ? 'Project Management' : 'AI Engineering'}
             </span>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardBody, CardHeader, Button, Badge, Spinner, EmptyState } from '@/components/ui';
+import { useAuthStore } from '@/lib/stores';
 import { WorkspaceUploader } from '@/components/workspace/WorkspaceUploader';
 import { toast } from '@/lib/stores';
 
@@ -141,6 +142,20 @@ export default function WorkspacePage() {
                       <span style={{ color: 'var(--nx-text-primary)', fontWeight: 'var(--nx-weight-medium)' }}>{ws.projectMeta?.hasTests ? 'Yes' : 'No'}</span>
                     </div>
                   </div>
+                  
+                  {/* Manage Access Button for Organizers */}
+                  {(useAuthStore.getState().user?.role === 'organizer' || useAuthStore.getState().user?.role === 'admin') && (
+                    <div style={{ marginTop: 'var(--nx-space-4)' }}>
+                      <Button 
+                        variant="secondary" 
+                        size="sm" 
+                        style={{ width: '100%' }}
+                        onClick={() => router.push(`/dashboard/workspace/${ws.id}/members`)}
+                      >
+                        Manage Project Access
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardBody>
             </Card>

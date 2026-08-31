@@ -43,6 +43,7 @@ export const DEFAULT_THEME: NexoraTheme = 'eclipse';
 // ============================================================
 export type UserRole =
   | 'admin'
+  | 'organizer'
   | 'developer'
   | 'client';
 
