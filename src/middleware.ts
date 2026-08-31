@@ -1,30 +1,25 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifySessionToken } from '@/lib/auth/jwt';
-import type { UserRole } from '@/types';
-
-const ADMIN_ROLES: UserRole[] = ['admin', 'super_admin' as UserRole];
 
 // Define protected routes and their required roles
-// If a route prefix is not here, it just requires authentication
-const ROLE_PROTECTED_ROUTES = [
-  // Admin only routes
-  { path: '/dashboard/users', allowed: ADMIN_ROLES },
-  { path: '/dashboard/audit', allowed: ADMIN_ROLES },
-  { path: '/dashboard/settings', allowed: ADMIN_ROLES },
-  { path: '/dashboard/logs', allowed: ADMIN_ROLES },
-  { path: '/dashboard/metrics', allowed: ADMIN_ROLES },
-  
-  // Non-Admin (Engineering) only routes
-  // (Assuming we strictly enforce that admins cannot access engineering tools)
-  { path: '/dashboard/code', blocked: ADMIN_ROLES },
-  { path: '/dashboard/qa', blocked: ADMIN_ROLES },
-  { path: '/dashboard/security', blocked: ADMIN_ROLES },
-  { path: '/dashboard/performance', blocked: ADMIN_ROLES },
-  { path: '/dashboard/runtime', blocked: ADMIN_ROLES },
-  { path: '/dashboard/certification', blocked: ADMIN_ROLES },
-  { path: '/dashboard/workspace', blocked: ADMIN_ROLES },
-  { path: '/dashboard/chat', blocked: ADMIN_ROLES },
+const ADMIN_ONLY_ROUTES = [
+  '/dashboard/users',
+  '/dashboard/audit',
+  '/dashboard/logs',
+  '/dashboard/metrics',
+];
+
+// Routes that admin/organizer should NOT access
+const NON_ADMIN_ROUTES = [
+  '/dashboard/code',
+  '/dashboard/qa',
+  '/dashboard/security',
+  '/dashboard/performance',
+  '/dashboard/runtime',
+  '/dashboard/certification',
+  '/dashboard/workspace',
+  '/dashboard/chat',
 ];
 
 export async function middleware(request: NextRequest) {
@@ -55,20 +50,28 @@ export async function middleware(request: NextRequest) {
 
   // 4. RBAC Authorization Checks
   const userRole = payload.role;
+  const userIsAdmin = userRole === 'admin' || userRole === 'super_admin';
 
-  for (const route of ROLE_PROTECTED_ROUTES) {
-    if (pathname.startsWith(route.path)) {
-      // Check if user role is explicitly allowed
-      if (route.allowed && !route.allowed.includes(userRole)) {
-        // Redirect to a safe dashboard page if unauthorized
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-      }
+  // Admin-only routes
+  for (const route of ADMIN_ONLY_ROUTES) {
+    if (pathname.startsWith(route) && !userIsAdmin) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
 
-      // Check if user role is explicitly blocked
-      if (route.blocked && route.blocked.includes(userRole)) {
-        // Redirect to a safe dashboard page if unauthorized
-        return NextResponse.redirect(new URL('/dashboard', request.url));
-      }
+  // Non-admin routes (blocked for admin/organizer)
+  for (const route of NON_ADMIN_ROUTES) {
+    if (pathname.startsWith(route) && userIsAdmin) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+
+  // Client can only access: /dashboard, /dashboard/qa, /dashboard/settings, /dashboard/ai-keys
+  if (userRole === 'client') {
+    const clientAllowed = ['/dashboard/qa', '/dashboard/settings', '/dashboard/ai-keys'];
+    const isAllowed = pathname === '/dashboard' || clientAllowed.some(r => pathname.startsWith(r));
+    if (!isAllowed) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }
 

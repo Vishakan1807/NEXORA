@@ -4,21 +4,22 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSidebarStore, useAuthStore, toast } from '@/lib/stores';
 import type { NavItem, UserRole } from '@/types';
+import { isAdmin } from '@/types';
 
 // Define which roles can access which items
 const hasAccess = (itemCategory: string, itemId: string, userRole: UserRole) => {
-  if (userRole === 'admin' || (userRole as any) === 'super_admin') {
-    // Admin: Users, Roles, Metrics(System), Logs(Observability). NO code, NO Q&A.
+  if (isAdmin(userRole)) {
+    // Admin: System admin tools, Observability, and general settings. NO code, NO Q&A, NO AI keys.
     if (itemCategory === 'System' || itemCategory === 'Observability') return true;
     if (itemId === 'settings') return true;
     return false;
   } else if (userRole === 'developer') {
-    // Developer: Everything EXCEPT Q&A, and Admin stuff (System/Logs)
+    // Developer: Everything EXCEPT Q&A and Admin stuff (System/Logs). HAS AI Keys.
     if (itemId === 'qa' || itemCategory === 'System' || itemCategory === 'Observability') return false;
     return true;
   } else if (userRole === 'client') {
-    // Client: Q&A and Settings ONLY.
-    if (itemId === 'qa' || itemId === 'settings') return true;
+    // Client: Q&A, AI Keys, and Settings ONLY.
+    if (itemId === 'qa' || itemId === 'settings' || itemId === 'ai_keys') return true;
     return false;
   } else if (userRole === 'organizer') {
     // Organizer: Dashboard, Workspace, Users & Roles, Settings
@@ -75,6 +76,7 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     label: 'Account',
     category: 'Account',
     items: [
+      { id: 'ai_keys', label: 'AI API Keys', icon: '🔑', href: '/dashboard/ai-keys' },
       { id: 'settings', label: 'General Settings', icon: '⚙️', href: '/dashboard/settings' },
     ],
   },
@@ -132,7 +134,7 @@ export function Sidebar() {
           <div className="nx-sidebar__brand-text">
             <span className="nx-sidebar__product-name">NEXORA</span>
             <span className="nx-sidebar__product-tagline">
-              {role === 'admin' ? 'System Admin' : role === 'client' ? 'Client Portal' : role === 'organizer' ? 'Project Management' : 'AI Engineering'}
+              {isAdmin(role) ? 'System Admin' : role === 'client' ? 'Client Portal' : role === 'organizer' ? 'Project Management' : 'AI Engineering'}
             </span>
           </div>
         </div>

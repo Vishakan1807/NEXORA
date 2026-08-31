@@ -4,10 +4,11 @@ import { workspaces, workspaceMembers } from '@/lib/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
+import { isAdmin } from '@/types';
 
 // Check if user has permission to manage members (must be owner/organizer or admin)
 async function checkManagePermission(session: any, workspaceId: string) {
-  if (session.role === 'admin') return true;
+  if (isAdmin(session.role) || session.role === 'organizer') return true;
   
   const [workspace] = await db
     .select()

@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
 import { encrypt } from '@/lib/auth/crypto';
+import { isAdmin } from '@/types';
 
 // Default providers to initialize
 const DEFAULT_PROVIDERS = [
@@ -61,8 +62,8 @@ export async function POST(request: Request) {
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    // Only admins can modify providers
-    if (session.role !== 'admin') {
+    // Only admins can modify global providers
+    if (!isAdmin(session.role)) {
       return NextResponse.json({ error: 'Admin access required to modify global API keys' }, { status: 403 });
     }
 

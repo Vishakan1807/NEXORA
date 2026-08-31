@@ -43,9 +43,15 @@ export const DEFAULT_THEME: NexoraTheme = 'eclipse';
 // ============================================================
 export type UserRole =
   | 'admin'
+  | 'super_admin'
   | 'organizer'
   | 'developer'
   | 'client';
+
+/** Check if a role has admin-level access */
+export function isAdmin(role: string): boolean {
+  return role === 'admin' || role === 'super_admin';
+}
 
 export interface User {
   id: string;

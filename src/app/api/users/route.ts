@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
+import { isAdmin } from '@/types';
 
 export async function GET(req: Request) {
   try {
@@ -12,8 +13,8 @@ export async function GET(req: Request) {
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    // Only admin can view all users
-    if (session.role !== 'admin' && session.role !== 'organizer') {
+    // Only admin or organizer can view all users
+    if (!isAdmin(session.role) && session.role !== 'organizer') {
       return NextResponse.json({ error: 'Admin privileges required' }, { status: 403 });
     }
 

@@ -3,15 +3,17 @@
 import { useRouter } from 'next/navigation';
 import { Card, CardBody, CardHeader, Button, Badge, StatusDot, Progress, EmptyState } from '@/components/ui';
 import { toast, useAuthStore } from '@/lib/stores';
+import { isAdmin } from '@/types';
 
 const QUICK_ACTIONS = [
-  { icon: '📂', label: 'Map Workspace', description: 'Connect a project directory', roles: ['admin', 'organizer', 'developer'] },
-  { icon: '📤', label: 'Upload Project', description: 'Upload files or ZIP archive', roles: ['admin', 'organizer', 'developer'] },
+  { icon: '📂', label: 'Map Workspace', description: 'Connect a project directory', roles: ['admin', 'super_admin', 'organizer', 'developer'] },
+  { icon: '📤', label: 'Upload Project', description: 'Upload files or ZIP archive', roles: ['admin', 'super_admin', 'organizer', 'developer'] },
   { icon: '🔍', label: 'Analyze Repository', description: 'Start project intelligence', roles: ['developer'] },
   { icon: '🧪', label: 'Run QA Suite', description: 'Execute full QA pipeline', roles: ['developer'] },
   { icon: '🔒', label: 'Security Scan', description: 'OWASP-aligned analysis', roles: ['developer'] },
   { icon: '✅', label: 'Certify Release', description: 'Production readiness check', roles: ['developer'] },
-  { icon: '❓', label: 'Client Q&A', description: 'Ask questions about your projects', actionUrl: '/dashboard/qa', roles: ['client', 'organizer'] },
+  { icon: '❓', label: 'Client Q&A', description: 'Ask questions about your projects', actionUrl: '/dashboard/qa', roles: ['client'] },
+  { icon: '🔑', label: 'AI API Keys', description: 'Configure your AI provider keys', actionUrl: '/dashboard/ai-keys', roles: ['client', 'developer'] },
 ];
 
 const SYSTEM_MODULES = [

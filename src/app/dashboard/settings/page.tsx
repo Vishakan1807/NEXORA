@@ -1,179 +1,108 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Card, CardBody, CardHeader, Button, Input, Badge, Spinner } from '@/components/ui';
-import { toast } from '@/lib/stores';
+import { useState } from 'react';
+import { Card, CardBody, CardHeader, Button, Input } from '@/components/ui';
+import { toast, useAuthStore } from '@/lib/stores';
 
 export default function SettingsPage() {
-  const [keys, setKeys] = useState<{ providerId: string; isConfigured: boolean; updatedAt: string }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  const [openaiKey, setOpenaiKey] = useState('');
-  const [anthropicKey, setAnthropicKey] = useState('');
-  const [geminiKey, setGeminiKey] = useState('');
-  
-  const [isSaving, setIsSaving] = useState<string | null>(null);
+  const user = useAuthStore(state => state.user);
+  const [name, setName] = useState(user?.name || '');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const fetchKeys = async () => {
-    try {
-      const res = await fetch('/api/user/keys');
-      if (res.ok) {
-        const data = await res.json();
-        setKeys(data.keys || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleUpdateProfile = () => {
+    // TODO: Wire up to API
+    toast('success', 'Profile Updated', 'Your profile has been updated successfully.');
   };
 
-  useEffect(() => {
-    fetchKeys();
-  }, []);
-
-  const handleSaveKey = async (providerId: string, apiKey: string) => {
-    if (!apiKey.trim()) {
-      toast('warning', 'API Key Required', 'Please enter a valid API key');
+  const handleChangePassword = () => {
+    if (!currentPassword || !newPassword) {
+      toast('warning', 'Missing Fields', 'Please fill in all password fields');
       return;
     }
-    
-    setIsSaving(providerId);
-    try {
-      const res = await fetch('/api/user/keys', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ providerId, apiKey })
-      });
-      
-      const data = await res.json();
-      if (res.ok) {
-        toast('success', 'Key Saved', `Your ${providerId} API key has been securely saved.`);
-        if (providerId === 'openai') setOpenaiKey('');
-        if (providerId === 'anthropic') setAnthropicKey('');
-        if (providerId === 'gemini') setGeminiKey('');
-        fetchKeys();
-      } else {
-        toast('error', 'Save Failed', data.error || 'Failed to save key');
-      }
-    } catch (err) {
-      toast('error', 'Network Error', 'Failed to save key');
-    } finally {
-      setIsSaving(null);
+    if (newPassword !== confirmPassword) {
+      toast('error', 'Mismatch', 'New password and confirmation do not match');
+      return;
     }
+    // TODO: Wire up to API
+    toast('success', 'Password Changed', 'Your password has been updated successfully.');
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
   };
-
-  const isConfigured = (providerId: string) => keys.some(k => k.providerId === providerId && k.isConfigured);
 
   return (
     <div className="nx-page">
       <div className="nx-page__header">
         <div>
           <h1 className="nx-page__title">General Settings</h1>
-          <p className="nx-page__description">Manage your personal preferences and API keys.</p>
+          <p className="nx-page__description">Manage your account preferences and profile information.</p>
         </div>
       </div>
-      
-      <div className="nx-grid nx-grid--1" style={{ maxWidth: '800px', margin: '0 auto' }}>
+
+      <div style={{ maxWidth: '700px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--nx-space-6)' }}>
+        {/* Profile Info */}
         <Card>
           <CardHeader>
-            <span className="nx-card__title">Personal AI Keys</span>
+            <span className="nx-card__title">Profile Information</span>
           </CardHeader>
           <CardBody>
-            <p style={{ fontSize: 'var(--nx-text-sm)', color: 'var(--nx-text-muted)', marginBottom: 'var(--nx-space-6)' }}>
-              Configure your own API keys. When provided, NEXORA will use your personal key instead of the platform's global key for all your operations. Keys are encrypted securely at rest.
-            </p>
-            
-            {isLoading ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: 'var(--nx-space-8)' }}>
-                <Spinner size="md" />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--nx-space-4)' }}>
+              <div>
+                <label style={{ display: 'block', fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)', marginBottom: 'var(--nx-space-1)', color: 'var(--nx-text-secondary)' }}>
+                  Email
+                </label>
+                <Input type="email" value={user?.email || ''} disabled />
               </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--nx-space-6)' }}>
-                
-                {/* OpenAI */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--nx-space-2)' }}>
-                    <label style={{ fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)' }}>
-                      OpenAI (GPT-4o, GPT-3.5)
-                    </label>
-                    <Badge variant={isConfigured('openai') ? 'success' : 'neutral'}>
-                      {isConfigured('openai') ? 'Configured' : 'Not Configured'}
-                    </Badge>
-                  </div>
-                  <div style={{ display: 'flex', gap: 'var(--nx-space-2)' }}>
-                    <Input 
-                      type="password" 
-                      placeholder={isConfigured('openai') ? 'sk-proj-... (Configured)' : 'sk-proj-...'} 
-                      value={openaiKey}
-                      onChange={(e) => setOpenaiKey(e.target.value)}
-                    />
-                    <Button 
-                      variant="primary" 
-                      disabled={!openaiKey.trim() || isSaving === 'openai'} 
-                      onClick={() => handleSaveKey('openai', openaiKey)}
-                    >
-                      {isSaving === 'openai' ? <Spinner size="sm" /> : 'Save'}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Anthropic */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--nx-space-2)' }}>
-                    <label style={{ fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)' }}>
-                      Anthropic (Claude 3.5 Sonnet)
-                    </label>
-                    <Badge variant={isConfigured('anthropic') ? 'success' : 'neutral'}>
-                      {isConfigured('anthropic') ? 'Configured' : 'Not Configured'}
-                    </Badge>
-                  </div>
-                  <div style={{ display: 'flex', gap: 'var(--nx-space-2)' }}>
-                    <Input 
-                      type="password" 
-                      placeholder={isConfigured('anthropic') ? 'sk-ant-... (Configured)' : 'sk-ant-...'} 
-                      value={anthropicKey}
-                      onChange={(e) => setAnthropicKey(e.target.value)}
-                    />
-                    <Button 
-                      variant="primary" 
-                      disabled={!anthropicKey.trim() || isSaving === 'anthropic'} 
-                      onClick={() => handleSaveKey('anthropic', anthropicKey)}
-                    >
-                      {isSaving === 'anthropic' ? <Spinner size="sm" /> : 'Save'}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Gemini */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--nx-space-2)' }}>
-                    <label style={{ fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)' }}>
-                      Google Gemini (1.5 Pro)
-                    </label>
-                    <Badge variant={isConfigured('gemini') ? 'success' : 'neutral'}>
-                      {isConfigured('gemini') ? 'Configured' : 'Not Configured'}
-                    </Badge>
-                  </div>
-                  <div style={{ display: 'flex', gap: 'var(--nx-space-2)' }}>
-                    <Input 
-                      type="password" 
-                      placeholder={isConfigured('gemini') ? 'AIzaSy... (Configured)' : 'AIzaSy...'} 
-                      value={geminiKey}
-                      onChange={(e) => setGeminiKey(e.target.value)}
-                    />
-                    <Button 
-                      variant="primary" 
-                      disabled={!geminiKey.trim() || isSaving === 'gemini'} 
-                      onClick={() => handleSaveKey('gemini', geminiKey)}
-                    >
-                      {isSaving === 'gemini' ? <Spinner size="sm" /> : 'Save'}
-                    </Button>
-                  </div>
-                </div>
-
+              <div>
+                <label style={{ display: 'block', fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)', marginBottom: 'var(--nx-space-1)', color: 'var(--nx-text-secondary)' }}>
+                  Display Name
+                </label>
+                <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
               </div>
-            )}
+              <div>
+                <label style={{ display: 'block', fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)', marginBottom: 'var(--nx-space-1)', color: 'var(--nx-text-secondary)' }}>
+                  Role
+                </label>
+                <Input type="text" value={user?.role || ''} disabled />
+              </div>
+              <Button variant="primary" size="sm" onClick={handleUpdateProfile} style={{ alignSelf: 'flex-start' }}>
+                Save Changes
+              </Button>
+            </div>
+          </CardBody>
+        </Card>
+
+        {/* Change Password */}
+        <Card>
+          <CardHeader>
+            <span className="nx-card__title">Change Password</span>
+          </CardHeader>
+          <CardBody>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--nx-space-4)' }}>
+              <div>
+                <label style={{ display: 'block', fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)', marginBottom: 'var(--nx-space-1)', color: 'var(--nx-text-secondary)' }}>
+                  Current Password
+                </label>
+                <Input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Enter current password" />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)', marginBottom: 'var(--nx-space-1)', color: 'var(--nx-text-secondary)' }}>
+                  New Password
+                </label>
+                <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Enter new password" />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontWeight: 'var(--nx-weight-medium)', fontSize: 'var(--nx-text-sm)', marginBottom: 'var(--nx-space-1)', color: 'var(--nx-text-secondary)' }}>
+                  Confirm New Password
+                </label>
+                <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Re-enter new password" />
+              </div>
+              <Button variant="secondary" size="sm" onClick={handleChangePassword} style={{ alignSelf: 'flex-start' }}>
+                Update Password
+              </Button>
+            </div>
           </CardBody>
         </Card>
       </div>

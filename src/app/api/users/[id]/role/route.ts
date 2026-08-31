@@ -4,6 +4,7 @@ import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
+import { isAdmin } from '@/types';
 
 export async function POST(
   req: Request,
@@ -17,7 +18,7 @@ export async function POST(
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
     // ONLY admin can promote/demote
-    if (session.role !== 'admin') {
+    if (!isAdmin(session.role)) {
       return NextResponse.json({ error: 'Admin privileges required' }, { status: 403 });
     }
 
