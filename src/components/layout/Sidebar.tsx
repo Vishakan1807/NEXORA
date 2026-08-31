@@ -27,6 +27,7 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: '📊', href: '/dashboard' },
       { id: 'workspace', label: 'Workspace', icon: '📂', href: '/dashboard/workspace' },
+      { id: 'qa', label: 'Client Q&A', icon: '❓', href: '/dashboard/qa' },
     ],
   },
   {
@@ -34,7 +35,6 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     category: 'Engineering',
     items: [
       { id: 'code', label: 'Code Studio', icon: '🔧', href: '/dashboard/code' },
-      { id: 'qa', label: 'Q & A', icon: '❓', href: '/dashboard/qa' },
       { id: 'security', label: 'Security (Soon)', icon: '🔒', href: '/dashboard/security' },
       { id: 'performance', label: 'Performance (Soon)', icon: '⚡', href: '/dashboard/performance' },
     ],
