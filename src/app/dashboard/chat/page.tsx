@@ -63,7 +63,8 @@ export default function ChatPage() {
     body: {
       workspaceId: selectedWorkspace,
       providerId: selectedProvider,
-      modelId: selectedModel
+      modelId: selectedModel,
+      mode: 'assistant'
     },
     onError: (err: any) => {
       toast('error', 'Chat Error', err.message);
@@ -74,8 +75,8 @@ export default function ChatPage() {
     <div className="nx-page" style={{ height: 'calc(100vh - var(--nx-topbar-height) - var(--nx-statusbar-height))', display: 'flex', flexDirection: 'column' }}>
       <div className="nx-page__header" style={{ marginBottom: 'var(--nx-space-4)' }}>
         <div>
-          <h1 className="nx-page__title">Orchestrator</h1>
-          <p className="nx-page__description">Chat with your intelligent repository.</p>
+          <h1 className="nx-page__title">Code Assistant</h1>
+          <p className="nx-page__description">Ask NEXORA to modify or generate code in your repository.</p>
         </div>
         
         {/* Top Controls */}

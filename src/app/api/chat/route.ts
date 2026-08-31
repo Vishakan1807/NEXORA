@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    const { messages, workspaceId, providerId, modelId } = await req.json();
+    const { messages, workspaceId, providerId, modelId, mode = 'assistant' } = await req.json();
 
     if (!workspaceId) {
       return NextResponse.json({ error: 'Please select a workspace' }, { status: 400 });
@@ -56,8 +56,11 @@ export async function POST(req: Request) {
     const model = await getProviderModel(providerId, modelId);
 
     // 3. Construct the system prompt with the injected codebase context
-    const systemPrompt = `You are NEXORA, an elite AI Software Architect and Orchestrator. 
-You are assisting a developer with their codebase.
+    const baseRole = mode === 'qa' 
+      ? 'You are an expert Codebase Q&A Assistant. Your goal is to explain code, architecture, and answer questions accurately. Do not attempt to modify the codebase.' 
+      : 'You are NEXORA, an elite AI Software Architect and Orchestrator. You have the ability to read, write, and execute commands in the codebase.';
+
+    const systemPrompt = `${baseRole}
 
 Here is the relevant context retrieved from their repository based on their query:
 <repository_context>
@@ -71,11 +74,13 @@ Instructions:
 `;
 
     // 4. Stream the response using Vercel AI SDK with injected Tools
+    const tools = mode === 'qa' ? undefined : getWorkspaceTools(workspace.sourcePath);
+
     const result = await streamText({
       model: model,
       system: systemPrompt,
       messages,
-      tools: getWorkspaceTools(workspace.sourcePath),
+      tools: tools,
     });
 
     return result.toTextStreamResponse();
