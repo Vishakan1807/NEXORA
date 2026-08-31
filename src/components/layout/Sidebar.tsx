@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSidebarStore, useAuthStore, toast } from '@/lib/stores';
@@ -88,6 +89,7 @@ export function Sidebar() {
   const { isCollapsed, toggleCollapsed, isOpen, setOpen } = useSidebarStore();
   const user = useAuthStore(state => state.user);
   const setAuth = useAuthStore(state => state.setAuth);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -171,7 +173,7 @@ export function Sidebar() {
         {/* Logout button */}
         <button 
           className="nx-sidebar__toggle" 
-          onClick={handleLogout} 
+          onClick={() => setShowLogoutConfirm(true)} 
           style={{ 
             color: 'var(--nx-error)', 
             borderBottom: '1px solid var(--nx-border)',
@@ -188,6 +190,57 @@ export function Sidebar() {
           {isCollapsed ? '→' : '← Collapse'}
         </button>
       </aside>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>
+          <div style={{
+            background: 'var(--nx-bg-primary)',
+            padding: 'var(--nx-space-6)',
+            borderRadius: 'var(--nx-radius-lg)',
+            border: '1px solid var(--nx-border)',
+            maxWidth: '400px',
+            width: '90%',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+          }}>
+            <h3 style={{ fontSize: 'var(--nx-text-lg)', fontWeight: 'bold', marginBottom: 'var(--nx-space-2)', color: 'var(--nx-text-primary)' }}>Log Out</h3>
+            <p style={{ color: 'var(--nx-text-secondary)', marginBottom: 'var(--nx-space-6)' }}>Are you sure you want to log out of your account?</p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--nx-space-3)' }}>
+              <button 
+                onClick={() => setShowLogoutConfirm(false)}
+                style={{
+                  padding: 'var(--nx-space-2) var(--nx-space-4)',
+                  borderRadius: 'var(--nx-radius-md)',
+                  background: 'transparent',
+                  border: '1px solid var(--nx-border)',
+                  color: 'var(--nx-text-primary)',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleLogout}
+                style={{
+                  padding: 'var(--nx-space-2) var(--nx-space-4)',
+                  borderRadius: 'var(--nx-radius-md)',
+                  background: 'var(--nx-error)',
+                  border: 'none',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontWeight: '500'
+                }}
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
