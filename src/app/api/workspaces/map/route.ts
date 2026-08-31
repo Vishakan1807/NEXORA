@@ -3,8 +3,7 @@ import { db } from '@/lib/db';
 import { workspaces } from '@/lib/db/schema';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import { cookies } from 'next/headers';
-import { ProjectParser } from '@/lib/workspace/parser';
-import { v4 as uuidv4 } from 'uuid';
+import { analyzeWorkspace } from '@/lib/workspace/parser';
 import fs from 'fs';
 import path from 'path';
 
@@ -35,25 +34,21 @@ export async function POST(request: Request) {
     }
 
     // Parse the project
-    const parser = new ProjectParser(localPath);
-    const meta = await parser.analyze();
-
-    // Generate workspace ID
-    const workspaceId = uuidv4();
+    const meta = analyzeWorkspace(localPath);
 
     // Insert into DB
-    await db.insert(workspaces).values({
-      id: workspaceId,
+    const [newWorkspace] = await db.insert(workspaces).values({
       userId: session.userId,
       name: name || path.basename(localPath),
-      sourcePath: localPath, // We just store the path directly! No copying!
+      sourceType: 'local',
+      sourcePath: localPath, 
       status: 'ready',
       projectMeta: meta,
-    });
+    }).returning({ id: workspaces.id });
 
     return NextResponse.json({ 
       success: true, 
-      workspaceId,
+      workspaceId: newWorkspace.id,
       meta 
     });
 
