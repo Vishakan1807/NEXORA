@@ -22,7 +22,7 @@ async function checkManagePermission(session: any, workspaceId: string) {
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ workspaceId: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -31,7 +31,7 @@ export async function GET(
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    const workspaceId = (await params).id;
+    const workspaceId = (await params).workspaceId;
 
     if (!(await checkManagePermission(session, workspaceId))) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -50,7 +50,7 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ workspaceId: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -59,7 +59,7 @@ export async function POST(
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    const workspaceId = (await params).id;
+    const workspaceId = (await params).workspaceId;
     const { userId } = await req.json();
 
     if (!(await checkManagePermission(session, workspaceId))) {
@@ -91,7 +91,7 @@ export async function POST(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ workspaceId: string }> }
 ) {
   try {
     const cookieStore = await cookies();
@@ -100,7 +100,7 @@ export async function DELETE(
     const session = await verifySessionToken(token);
     if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
 
-    const workspaceId = (await params).id;
+    const workspaceId = (await params).workspaceId;
     const { userId } = await req.json();
 
     if (!(await checkManagePermission(session, workspaceId))) {

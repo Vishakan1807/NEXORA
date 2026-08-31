@@ -9,7 +9,7 @@ export default function WorkspaceMembersPage() {
   const params = useParams();
   const router = useRouter();
   const auth = useAuthStore(state => state.user);
-  const workspaceId = params.id as string;
+  const workspaceId = params.workspaceId as string;
   
   const [users, setUsers] = useState<any[]>([]);
   const [members, setMembers] = useState<string[]>([]);
