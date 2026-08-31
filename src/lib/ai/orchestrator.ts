@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
-import { workspaceDocuments, providers } from '@/lib/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { workspaceDocuments, providers, userKeys } from '@/lib/db/schema';
+import { eq, and, sql } from 'drizzle-orm';
 import { openai, createOpenAI } from '@ai-sdk/openai';
 import { embed } from 'ai';
 import { decrypt } from '@/lib/auth/crypto';
@@ -52,18 +52,34 @@ export async function retrieveContext(workspaceId: string, prompt: string) {
 /**
  * Instantiates the correct AI SDK provider using the user's securely stored API keys.
  */
-export async function getProviderModel(providerId: string, modelName: string) {
-  // Fetch the provider's API key from the DB
-  const [providerRecord] = await db
-    .select()
-    .from(providers)
-    .where(eq(providers.id, providerId));
+export async function getProviderModel(providerId: string, modelName: string, userId?: string) {
+  let apiKey = '';
 
-  if (!providerRecord || !providerRecord.isConfigured || !providerRecord.apiKeyEncrypted) {
-    throw new Error(`${providerId} is not configured. Please add an API key in Settings.`);
+  // 1. Try to fetch the user's personal API key first
+  if (userId) {
+    const [userKeyRecord] = await db
+      .select()
+      .from(userKeys)
+      .where(and(eq(userKeys.userId, userId), eq(userKeys.providerId, providerId)));
+
+    if (userKeyRecord && userKeyRecord.apiKeyEncrypted) {
+      apiKey = decrypt(userKeyRecord.apiKeyEncrypted);
+    }
   }
 
-  const apiKey = decrypt(providerRecord.apiKeyEncrypted);
+  // 2. Fall back to the global platform API key if no personal key is found
+  if (!apiKey) {
+    const [providerRecord] = await db
+      .select()
+      .from(providers)
+      .where(eq(providers.id, providerId));
+
+    if (!providerRecord || !providerRecord.isConfigured || !providerRecord.apiKeyEncrypted) {
+      throw new Error(`${providerId} is not configured globally, and you haven't provided a personal key.`);
+    }
+
+    apiKey = decrypt(providerRecord.apiKeyEncrypted);
+  }
 
   switch (providerId) {
     case 'openai':

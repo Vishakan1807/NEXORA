@@ -68,7 +68,7 @@ export async function POST(req: Request) {
     }
 
     // 2. Instantiate the requested AI model securely
-    const model = await getProviderModel(providerId, modelId);
+    const model = await getProviderModel(providerId, modelId, session.userId);
 
     // 3. Construct the system prompt with the injected codebase context
     const baseRole = mode === 'qa' 

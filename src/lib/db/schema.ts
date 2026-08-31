@@ -108,3 +108,14 @@ export const workspaceDocuments = pgTable('workspace_documents', {
   embedding: vector('embedding', { dimensions: 1536 }), // OpenAI text-embedding-3-small dimensions
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+// ============================================================
+// USER API KEYS
+// ============================================================
+export const userKeys = pgTable('user_keys', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  providerId: text('provider_id').notNull(), // 'openai', 'anthropic', 'gemini'
+  apiKeyEncrypted: text('api_key_encrypted').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});

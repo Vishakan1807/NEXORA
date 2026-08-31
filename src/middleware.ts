@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { verifySessionToken } from '@/lib/auth/jwt';
 import type { UserRole } from '@/types';
 
-const ADMIN_ROLES: UserRole[] = ['admin'];
+const ADMIN_ROLES: UserRole[] = ['admin', 'super_admin' as UserRole];
 
 // Define protected routes and their required roles
 // If a route prefix is not here, it just requires authentication
