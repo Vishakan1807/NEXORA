@@ -75,6 +75,15 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Organizer can only access: /dashboard, /dashboard/projects, /dashboard/settings
+  if (userRole === 'organizer') {
+    const orgAllowed = ['/dashboard/projects', '/dashboard/settings'];
+    const isAllowed = pathname === '/dashboard' || orgAllowed.some(r => pathname.startsWith(r));
+    if (!isAllowed) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+
   // 5. Add user info to headers for downstream use if needed
   const response = NextResponse.next();
   response.headers.set('x-user-id', payload.userId);

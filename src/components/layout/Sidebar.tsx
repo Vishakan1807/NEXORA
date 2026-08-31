@@ -23,8 +23,8 @@ const hasAccess = (itemCategory: string, itemId: string, userRole: UserRole) => 
     if (itemId === 'qa' || itemId === 'settings' || itemId === 'ai_keys') return true;
     return false;
   } else if (userRole === 'organizer') {
-    // Organizer: Dashboard, Workspace, Users & Roles, Settings
-    if (itemId === 'dashboard' || itemId === 'workspace' || itemId === 'users' || itemId === 'settings') return true;
+    // Organizer: Command Center (Dashboard), Projects, Settings
+    if (itemId === 'dashboard' || itemId === 'projects' || itemId === 'settings') return true;
     return false;
   }
   return false;
@@ -35,7 +35,8 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     label: 'Platform',
     category: 'Platform',
     items: [
-      { id: 'dashboard', label: 'Dashboard', icon: '📊', href: '/dashboard' },
+      { id: 'dashboard', label: 'Command Center', icon: '📊', href: '/dashboard' },
+      { id: 'projects', label: 'Projects', icon: '📁', href: '/dashboard/projects' },
       { id: 'workspace', label: 'Workspace', icon: '📂', href: '/dashboard/workspace' },
       { id: 'qa', label: 'Client Q&A', icon: '❓', href: '/dashboard/qa' },
     ],

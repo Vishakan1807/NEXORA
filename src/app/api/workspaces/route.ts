@@ -54,3 +54,40 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to fetch workspaces' }, { status: 500 });
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('nexora_session')?.value;
+    
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await verifySessionToken(token);
+    if (!session) return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
+
+    // Only organizers and admins can create projects
+    if (session.role !== 'organizer' && session.role !== 'admin' && session.role !== 'super_admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const { name } = await request.json();
+    if (!name || typeof name !== 'string') {
+      return NextResponse.json({ error: 'Project name is required' }, { status: 400 });
+    }
+
+    const newProject = await db
+      .insert(workspaces)
+      .values({
+        userId: session.userId,
+        name: name,
+        sourceType: 'local',
+        sourcePath: 'unconfigured', // Empty shell
+        status: 'created',
+      })
+      .returning();
+
+    return NextResponse.json({ project: newProject[0] });
+  } catch (error) {
+    console.error('Error creating project:', error);
+    return NextResponse.json({ error: 'Failed to create project' }, { status: 500 });
+  }
+}
