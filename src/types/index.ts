@@ -42,13 +42,9 @@ export const DEFAULT_THEME: NexoraTheme = 'eclipse';
 // USER & AUTH
 // ============================================================
 export type UserRole =
-  | 'viewer'
-  | 'developer'
-  | 'qa_engineer'
-  | 'security_engineer'
-  | 'architect'
   | 'admin'
-  | 'super_admin';
+  | 'developer'
+  | 'client';
 
 export interface User {
   id: string;

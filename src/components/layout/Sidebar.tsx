@@ -5,19 +5,23 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useSidebarStore, useAuthStore, toast } from '@/lib/stores';
 import type { NavItem, UserRole } from '@/types';
 
-// Define which roles can access which sections
-const ADMIN_ROLES: UserRole[] = ['admin', 'super_admin'];
-
-const hasAccess = (itemCategory: string, userRole: UserRole) => {
-  const isAdmin = ADMIN_ROLES.includes(userRole);
-  
-  if (isAdmin) {
-    // Admins ONLY see Platform (Dashboard), System (Admin tools), and Observability
-    return ['Platform', 'System', 'Observability'].includes(itemCategory);
-  } else {
-    // Non-admins see everything EXCEPT System (Admin tools)
-    return itemCategory !== 'System';
+// Define which roles can access which items
+const hasAccess = (itemCategory: string, itemId: string, userRole: UserRole) => {
+  if (userRole === 'admin') {
+    // Admin: Users, Roles, Metrics(System), Logs(Observability). NO code, NO Q&A.
+    if (itemCategory === 'System' || itemCategory === 'Observability') return true;
+    if (itemId === 'settings') return true;
+    return false;
+  } else if (userRole === 'developer') {
+    // Developer: Everything EXCEPT Q&A, and Admin stuff (System/Logs)
+    if (itemId === 'qa' || itemCategory === 'System' || itemCategory === 'Observability') return false;
+    return true;
+  } else if (userRole === 'client') {
+    // Client: Q&A and Settings ONLY.
+    if (itemId === 'qa' || itemId === 'settings') return true;
+    return false;
   }
+  return false;
 };
 
 const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
@@ -60,8 +64,14 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     category: 'System',
     items: [
       { id: 'users', label: 'Users & Roles', icon: '👥', href: '/dashboard/users' },
-      { id: 'settings', label: 'Global Settings', icon: '⚙️', href: '/dashboard/settings' },
       { id: 'security_audit', label: 'Security Audit', icon: '🛡️', href: '/dashboard/audit' },
+    ],
+  },
+  {
+    label: 'Account',
+    category: 'Account',
+    items: [
+      { id: 'settings', label: 'General Settings', icon: '⚙️', href: '/dashboard/settings' },
     ],
   },
 ];
@@ -92,9 +102,14 @@ export function Sidebar() {
     .filter(Boolean)
     .join(' ');
 
-  // Filter sections based on RBAC rules
+  // Filter sections and items based on RBAC rules
   const role = user?.role || 'developer';
-  const visibleSections = NAV_SECTIONS.filter(section => hasAccess(section.category, role));
+  
+  const visibleSections = NAV_SECTIONS.map(section => {
+    // Filter items inside the section
+    const filteredItems = section.items.filter(item => hasAccess(section.category, item.id, role));
+    return { ...section, items: filteredItems };
+  }).filter(section => section.items.length > 0); // Hide empty sections
 
   return (
     <>

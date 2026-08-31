@@ -4,8 +4,8 @@ export default function ComingSoonPage() {
   return (
     <div className="nx-page">
       <div className="nx-page__header">
-        <h1 className="nx-page__title">Coming Soon</h1>
-        <p className="nx-page__description">This module is currently in development for a future phase.</p>
+        <h1 className="nx-page__title">General Settings</h1>
+        <p className="nx-page__description">Manage your account and platform preferences.</p>
       </div>
       <Card>
         <CardBody style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
