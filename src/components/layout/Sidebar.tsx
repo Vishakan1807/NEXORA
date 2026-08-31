@@ -7,7 +7,7 @@ import type { NavItem, UserRole } from '@/types';
 
 // Define which roles can access which items
 const hasAccess = (itemCategory: string, itemId: string, userRole: UserRole) => {
-  if (userRole === 'admin') {
+  if (userRole === 'admin' || (userRole as any) === 'super_admin') {
     // Admin: Users, Roles, Metrics(System), Logs(Observability). NO code, NO Q&A.
     if (itemCategory === 'System' || itemCategory === 'Observability') return true;
     if (itemId === 'settings') return true;
