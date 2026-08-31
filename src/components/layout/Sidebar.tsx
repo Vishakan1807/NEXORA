@@ -45,16 +45,16 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     category: 'Engineering',
     items: [
       { id: 'code', label: 'Code Studio', icon: '🔧', href: '/dashboard/code' },
-      { id: 'security', label: 'Security (Soon)', icon: '🔒', href: '/dashboard/security' },
-      { id: 'performance', label: 'Performance (Soon)', icon: '⚡', href: '/dashboard/performance' },
+      { id: 'security', label: 'Security', icon: '🔒', href: '/dashboard/security' },
+      { id: 'performance', label: 'Performance', icon: '⚡', href: '/dashboard/performance' },
     ],
   },
   {
     label: 'Operations',
     category: 'Operations',
     items: [
-      { id: 'runtime', label: 'Runtime (Soon)', icon: '🚀', href: '/dashboard/runtime' },
-      { id: 'certification', label: 'Certification (Soon)', icon: '✅', href: '/dashboard/certification' },
+      { id: 'runtime', label: 'Runtime', icon: '🚀', href: '/dashboard/runtime' },
+      { id: 'certification', label: 'Certification', icon: '✅', href: '/dashboard/certification' },
       { id: 'providers', label: 'AI Providers', icon: '🤖', href: '/dashboard/providers' },
     ],
   },
