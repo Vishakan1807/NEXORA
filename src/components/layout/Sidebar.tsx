@@ -26,7 +26,7 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     category: 'Platform',
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: '📊', href: '/dashboard' },
-      { id: 'chat', label: 'Command', icon: '💬', href: '/dashboard/chat' },
+      { id: 'chat', label: 'Code Assistant', icon: '💻', href: '/dashboard/chat' },
       { id: 'workspace', label: 'Workspace', icon: '📂', href: '/dashboard/workspace' },
     ],
   },
@@ -34,18 +34,18 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     label: 'Engineering',
     category: 'Engineering',
     items: [
-      { id: 'code', label: 'Code', icon: '🔧', href: '/dashboard/code' },
-      { id: 'qa', label: 'QA', icon: '🧪', href: '/dashboard/qa' },
-      { id: 'security', label: 'Security', icon: '🔒', href: '/dashboard/security' },
-      { id: 'performance', label: 'Performance', icon: '⚡', href: '/dashboard/performance' },
+      { id: 'code', label: 'Code Studio', icon: '🔧', href: '/dashboard/code' },
+      { id: 'qa', label: 'Q & A', icon: '❓', href: '/dashboard/qa' },
+      { id: 'security', label: 'Security (Soon)', icon: '🔒', href: '/dashboard/security' },
+      { id: 'performance', label: 'Performance (Soon)', icon: '⚡', href: '/dashboard/performance' },
     ],
   },
   {
     label: 'Operations',
     category: 'Operations',
     items: [
-      { id: 'runtime', label: 'Runtime', icon: '🚀', href: '/dashboard/runtime' },
-      { id: 'certification', label: 'Certification', icon: '✅', href: '/dashboard/certification' },
+      { id: 'runtime', label: 'Runtime (Soon)', icon: '🚀', href: '/dashboard/runtime' },
+      { id: 'certification', label: 'Certification (Soon)', icon: '✅', href: '/dashboard/certification' },
       { id: 'providers', label: 'AI Providers', icon: '🤖', href: '/dashboard/providers' },
     ],
   },
@@ -54,7 +54,6 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     category: 'Observability',
     items: [
       { id: 'logs', label: 'System Logs', icon: '📝', href: '/dashboard/logs' },
-      { id: 'metrics', label: 'Metrics', icon: '📈', href: '/dashboard/metrics' },
     ],
   },
   {

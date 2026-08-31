@@ -14,6 +14,7 @@
     "@ai-sdk/openai": "^4.0.50",
     "@ai-sdk/react": "^4.0.86",
     "@openrouter/ai-sdk-provider": "^3.0.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "adm-zip": "^0.6.0",
     "ai": "^7.0.83",
     "bcryptjs": "^3.0.3",
@@ -27,6 +28,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
     "uuid": "^14.0.2",
     "zustand": "^5.0.15"
   },

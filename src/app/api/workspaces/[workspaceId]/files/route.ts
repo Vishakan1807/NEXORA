@@ -56,7 +56,14 @@ export async function GET(
 
     const stat = fs.statSync(targetPath);
     if (!stat.isDirectory()) {
-      return NextResponse.json({ error: 'Path is not a directory' }, { status: 400 });
+      // It's a file, return the content instead of an error!
+      const content = fs.readFileSync(targetPath, 'utf8');
+      return NextResponse.json({ 
+        isFile: true, 
+        content,
+        size: stat.size,
+        name: path.basename(targetPath)
+      });
     }
 
     const entries = fs.readdirSync(targetPath, { withFileTypes: true });

@@ -43,8 +43,9 @@ export function DiffViewer({ diffText, filename }: DiffViewerProps) {
 
   if (!diffText) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--nx-text-muted)' }}>
-        No changes found in {filename}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--nx-text-muted)' }}>
+        <p style={{ marginBottom: 'var(--nx-space-2)' }}>No uncommitted changes found in <strong>{filename}</strong></p>
+        <p style={{ fontSize: 'var(--nx-text-sm)', opacity: 0.7 }}>Edit this file locally to see its diff here, or use the Workspace tab to read the file.</p>
       </div>
     );
   }

@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { Card, CardHeader, CardBody, Badge, Button, Spinner } from '@/components/ui';
 import { FileTree } from '@/components/workspace/FileTree';
 import { toast } from '@/lib/stores';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface WorkspaceDetail {
   id: string;
@@ -20,6 +22,8 @@ export default function WorkspaceDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isIndexing, setIsIndexing] = useState(false);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [fileContent, setFileContent] = useState<string>('');
+  const [isLoadingFile, setIsLoadingFile] = useState(false);
 
   useEffect(() => {
     if (!params.id) return;
@@ -47,6 +51,29 @@ export default function WorkspaceDetailPage() {
 
     fetchWorkspace();
   }, [params.id, router]);
+
+  useEffect(() => {
+    if (!selectedFile || !params.id) return;
+    
+    const fetchFileContent = async () => {
+      setIsLoadingFile(true);
+      try {
+        const res = await fetch(`/api/workspaces/${params.id}/files?path=${encodeURIComponent(selectedFile)}`);
+        const data = await res.json();
+        if (res.ok && data.isFile) {
+          setFileContent(data.content || '');
+        } else {
+          setFileContent('// Failed to load file content');
+        }
+      } catch (err: any) {
+        setFileContent('// Error loading file content: ' + err.message);
+      } finally {
+        setIsLoadingFile(false);
+      }
+    };
+    
+    fetchFileContent();
+  }, [selectedFile, params.id]);
 
   const handleRunIntelligence = async () => {
     setIsIndexing(true);
@@ -125,8 +152,22 @@ export default function WorkspaceDetailPage() {
                     {selectedFile}
                   </span>
                 </div>
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--nx-text-muted)', background: 'var(--nx-bg-sunken)' }}>
-                  <p>File content viewer will be implemented in Phase 2.3</p>
+                <div style={{ flex: 1, overflow: 'auto', background: '#1d1f21' }}>
+                  {isLoadingFile ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                      <Spinner size="sm" />
+                    </div>
+                  ) : (
+                    <SyntaxHighlighter
+                      language={selectedFile.split('.').pop() || 'typescript'}
+                      style={atomDark}
+                      customStyle={{ margin: 0, padding: '16px', fontSize: '14px', background: 'transparent' }}
+                      showLineNumbers={true}
+                      wrapLines={true}
+                    >
+                      {fileContent}
+                    </SyntaxHighlighter>
+                  )}
                 </div>
               </div>
             ) : (
