@@ -26,7 +26,6 @@ const NAV_SECTIONS: { label: string; category: string; items: NavItem[] }[] = [
     category: 'Platform',
     items: [
       { id: 'dashboard', label: 'Dashboard', icon: '📊', href: '/dashboard' },
-      { id: 'chat', label: 'Code Assistant', icon: '💻', href: '/dashboard/chat' },
       { id: 'workspace', label: 'Workspace', icon: '📂', href: '/dashboard/workspace' },
     ],
   },
